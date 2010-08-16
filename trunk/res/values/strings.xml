@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_edit">Edit Profile</string>
+    <string name="app_name">Othikyatha</string>
+<string name="name_pref">namePreference</string>
+<string name="ringtone_pref">ringtonePreference</string>
+<string name="ring_volume_pref">ringVolumePreference</string>
+<string name="voice_volume_pref">voiceVolumePreference</string>
+<string name="silent_pref">silentPreference</string>
+<string name="vibrate_pref">vibratrePreference</string>
+<string name="media_volume_pref">mediaVolumePreference</string>
+</resources>
