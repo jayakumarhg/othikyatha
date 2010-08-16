@@ -36,11 +36,11 @@ public class ProfileListActivity extends ListActivity {
 		ContextWrapper contextWrapper = new ContextWrapper(
 				getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
-
-		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		proximityAlertManager = new ProximityAlertManager(
-				getApplicationContext(), locationManager);
-
+		
+		LocationManager locationManager = (LocationManager)
+		    getSystemService(Context.LOCATION_SERVICE);
+		proximityAlertManager = new ProximityAlertManager(getApplicationContext(), locationManager);
+		
 		if (dataManager.hasNoActiveProfiles()) {
 			createDefaultProfiles();
 		}

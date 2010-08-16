@@ -5,13 +5,10 @@
                 android:key="@string/name_pref"
                 android:title="Profile Name"
                 android:layout="@+layout/edittextpreference" />
-          <RingtonePreference
-                android:name="Ringtone Preference"
-                android:summary="Select a ringtone"
-                android:title="Ringtones"
-                android:ringtoneType="ringtone"
-                android:showSilent="false"
-                android:key="@string/ringtone_pref" />
+          <com.beatabout.othikyatha.LocationsPreference 
+                android:key="locsPref"
+                android:title="Locations"
+                android:layout="@+layout/locationspreference" />
            <com.beatabout.othikyatha.SeekbarPreference 
                 android:key="@string/ring_volume_pref"
                 android:title="Ringer Volume"
@@ -30,4 +27,11 @@
                 android:key="@string/media_volume_pref"
                 android:title="Media Volume"
                 android:layout="@+layout/seekbarpreference" />
+           <RingtonePreference
+                android:name="Ringtone Preference"
+                android:summary="Select a ringtone"
+                android:title="Ringtones"
+                android:ringtoneType="ringtone"
+                android:showSilent="false"
+                android:key="@string/ringtone_pref" />
 </PreferenceScreen>

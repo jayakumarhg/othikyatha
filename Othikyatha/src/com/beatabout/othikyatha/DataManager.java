@@ -27,7 +27,9 @@ public class DataManager {
 
 	public synchronized int getNextId() {
 		int next = profileIdPreferences.getInt(nextId, 0);
-		profileIdPreferences.edit().putInt(nextId, next + 1).commit();
+		profileIdPreferences.edit()
+		    .putInt(nextId, next + 1)
+		    .commit();
 		return next;
 	}
 
@@ -54,12 +56,15 @@ public class DataManager {
 		// manager.getSharedPreferences().edit().commit();
 
 		// Removes the profile id in the active preferences file
-		activeProfilesPreferences.edit().remove(getPreferenceName(id)).commit();
+		activeProfilesPreferences.edit()
+				.remove(getPreferenceName(id))
+				.commit();
 	}
 
 	public void addProfileEntry(int id) {
-		activeProfilesPreferences.edit().putInt(getPreferenceName(id), id)
-				.commit();
+		activeProfilesPreferences.edit()
+		    .putInt(getPreferenceName(id), id)
+		    .commit();
 	}
 
 	public int addProfileEntry() {
