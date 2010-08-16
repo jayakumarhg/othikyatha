@@ -150,11 +150,9 @@ public class ProfileListActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.profilelistmenu, menu);
-		menu.setHeaderTitle("Profile Options" + " "
-				+ Integer.toString((int) info.id));
+		menu.setHeaderTitle("Profile Options");
 	}
 
 	@Override
