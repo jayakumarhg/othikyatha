@@ -24,12 +24,11 @@ public class ProfileSwitchActivity extends Activity {
 
 		super.onCreate(savedInstanceState);
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		ContextWrapper contextWrapper = new ContextWrapper(
-				getApplicationContext());
+		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		proximityAlertManager = new ProximityAlertManager(
-				getApplicationContext(), locationManager);
+		proximityAlertManager = new ProximityAlertManager(getApplicationContext(),
+				locationManager);
 	}
 
 	@Override
@@ -56,21 +55,19 @@ public class ProfileSwitchActivity extends Activity {
 		int icon = R.drawable.icon;
 		Profile profile = dataManager.getProfile(profileId);
 		CharSequence tickerText = "Profile changed"
-				+ (entering ? " to " : " from ") + profile.getName() + "("
-				+ profileId + ")";
-		Notification notification = new Notification(icon, tickerText, System
-				.currentTimeMillis() + 5000);
+				+ (entering ? " to " : " from ") + profile.getName() + "(" + profileId
+				+ ")";
+		Notification notification = new Notification(icon, tickerText,
+				System.currentTimeMillis() + 5000);
 		Intent intent = new Intent(this, ProfileListActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(
 				getApplicationContext(), 0, intent, 0);
-		notification.setLatestEventInfo(getApplicationContext(),
-				"Profile Changed", tickerText, contentIntent);
-		nm.notify(
-				PROFILE_SWITCH_NOTIFY_ID + profileId * 2 + (entering ? 1 : 0),
+		notification.setLatestEventInfo(getApplicationContext(), "Profile Changed",
+				tickerText, contentIntent);
+		nm.notify(PROFILE_SWITCH_NOTIFY_ID + profileId * 2 + (entering ? 1 : 0),
 				notification);
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-		ProfileManager
-				.applyProfile(profile, audioManager, getContentResolver());
+		ProfileManager.applyProfile(profile, audioManager, getContentResolver());
 		// this.finish();
 	}
 

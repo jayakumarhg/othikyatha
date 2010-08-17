@@ -14,15 +14,15 @@ public class SeekbarPreference extends Preference implements
 	public SeekbarPreference(Context context) {
 		super(context);
 	}
-	
+
 	public SeekbarPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	public SeekbarPreference(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
-	
+
 	@Override
 	protected void onBindView(View view) {
 		super.onBindView(view);
@@ -32,10 +32,9 @@ public class SeekbarPreference extends Preference implements
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setText(getTitle());
 	}
-	
-	public void onProgressChanged(SeekBar seekBar, int progress,
-			boolean fromUser) {
-		SharedPreferences.Editor editor =  getEditor();
+
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+		SharedPreferences.Editor editor = getEditor();
 		editor.putInt(getKey(), progress);
 		editor.commit();
 	}

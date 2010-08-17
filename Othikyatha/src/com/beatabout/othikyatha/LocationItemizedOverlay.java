@@ -11,12 +11,12 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
 public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
-  OverlayItem prevOverlayItem;
-  OverlayItem currOverlayItem;
-  ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
-  
+	OverlayItem prevOverlayItem;
+	OverlayItem currOverlayItem;
+	ArrayList<OverlayItem> overlayItems = new ArrayList<OverlayItem>();
+
 	private ProfileLocationActivity profileLocationActivity;
-  
+
 	public LocationItemizedOverlay(Drawable defaultMarker,
 			ProfileLocationActivity profileLocationActivity) {
 		super(boundCenter(defaultMarker));
@@ -29,35 +29,37 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	}
 
 	public void setPreviousOverlayItem(double latitude, double longitude) {
-    if (prevOverlayItem != null) {
-    	overlayItems.remove(prevOverlayItem);
-    }
-    
-		GeoPoint point = new GeoPoint((int)(latitude * 1E6), (int)(longitude * 1E6));
-    prevOverlayItem = new OverlayItem(point, "Old selection", "");
-    overlayItems.add(prevOverlayItem);
-    populate();
+		if (prevOverlayItem != null) {
+			overlayItems.remove(prevOverlayItem);
+		}
+
+		GeoPoint point = new GeoPoint((int) (latitude * 1E6),
+				(int) (longitude * 1E6));
+		prevOverlayItem = new OverlayItem(point, "Old selection", "");
+		overlayItems.add(prevOverlayItem);
+		populate();
 	}
 
 	protected void setCurrentOverlayItem(double longitude, double latitude) {
-		GeoPoint point = new GeoPoint((int)(latitude * 1E6), (int)(longitude * 1E6));
+		GeoPoint point = new GeoPoint((int) (latitude * 1E6),
+				(int) (longitude * 1E6));
 		setCurrentOverlayItem(point);
 	}
-	
+
 	protected void setCurrentOverlayItem(GeoPoint point) {
-    if (currOverlayItem != null) {
-    	overlayItems.remove(currOverlayItem);
-    }
-    currOverlayItem = new OverlayItem(point, "New selection", "");
-    overlayItems.add(currOverlayItem);
-    populate();
+		if (currOverlayItem != null) {
+			overlayItems.remove(currOverlayItem);
+		}
+		currOverlayItem = new OverlayItem(point, "New selection", "");
+		overlayItems.add(currOverlayItem);
+		populate();
 	}
 
 	@Override
 	public int size() {
 		return overlayItems.size();
 	}
-	
+
 	@Override
 	protected boolean onTap(int pIndex) {
 		if (overlayItems.get(pIndex) == currOverlayItem) {
@@ -66,9 +68,9 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		}
 		return false;
 	}
-	
+
 	@Override
-  public boolean onTouchEvent(MotionEvent event, MapView mapView) {
+	public boolean onTouchEvent(MotionEvent event, MapView mapView) {
 		if (event.getAction() == MotionEvent.ACTION_UP) {
 			if (event.getEventTime() - event.getDownTime() < 200) {
 				GeoPoint newPoint = mapView.getProjection().fromPixels(
@@ -79,5 +81,5 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			}
 		}
 		return false;
-  }
+	}
 }

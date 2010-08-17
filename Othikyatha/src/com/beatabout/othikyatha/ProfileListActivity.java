@@ -33,14 +33,13 @@ public class ProfileListActivity extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		ContextWrapper contextWrapper = new ContextWrapper(
-				getApplicationContext());
+		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
-		
-		LocationManager locationManager = (LocationManager)
-		    getSystemService(Context.LOCATION_SERVICE);
-		proximityAlertManager = new ProximityAlertManager(getApplicationContext(), locationManager);
-		
+
+		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		proximityAlertManager = new ProximityAlertManager(getApplicationContext(),
+				locationManager);
+
 		if (dataManager.hasNoActiveProfiles()) {
 			createDefaultProfiles();
 		}
@@ -124,7 +123,7 @@ public class ProfileListActivity extends ListActivity {
 	public boolean onPreparePanel(int featureId, View view, Menu menu) {
 		MenuItem item = menu.findItem(R.id.manualMode);
 		item.setIcon(dataManager.getManualMode() ? android.R.drawable.checkbox_on_background
-					: android.R.drawable.checkbox_off_background);
+				: android.R.drawable.checkbox_off_background);
 		return true;
 	}
 
@@ -157,8 +156,7 @@ public class ProfileListActivity extends ListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.edit:
 			int profileId = (int) info.targetView.getId();
@@ -167,7 +165,7 @@ public class ProfileListActivity extends ListActivity {
 			startActivity(intent);
 			return true;
 		case R.id.delete:
-			dataManager.removeProfileEntry((int) info.id); 
+			dataManager.removeProfileEntry((int) info.id);
 			return true;
 		default:
 			return true;
@@ -189,8 +187,8 @@ public class ProfileListActivity extends ListActivity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
 			if (v == null) {
-				v = inflater.inflate(
-						android.R.layout.simple_list_item_single_choice, null);
+				v = inflater.inflate(android.R.layout.simple_list_item_single_choice,
+						null);
 			}
 			Profile profile = profiles.get(position);
 
@@ -203,14 +201,15 @@ public class ProfileListActivity extends ListActivity {
 			v.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					int profileId = v.getId();
-					Intent intent = new Intent(
-							"com.beatabout.othikyatha.EDIT_PROFILE");
+					Intent intent = new Intent("com.beatabout.othikyatha.EDIT_PROFILE");
 					intent.putExtra("profileId", profileId);
 					startActivity(intent);
 					/*
-					AudioManager audioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
-					ProfileManager.applyProfile(dataManager.getProfile(profileId), audioManager, v.getContext().getContentResolver());
-					*/
+					 * AudioManager audioManager =
+					 * (AudioManager)getSystemService(AUDIO_SERVICE);
+					 * ProfileManager.applyProfile(dataManager.getProfile(profileId),
+					 * audioManager, v.getContext().getContentResolver());
+					 */
 				}
 			});
 			v.setLongClickable(true);

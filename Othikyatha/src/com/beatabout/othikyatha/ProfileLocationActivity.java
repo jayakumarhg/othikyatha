@@ -120,8 +120,8 @@ public class ProfileLocationActivity extends MapActivity {
 		builder.setItems(items, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int item) {
 				if (item != 0) {
-				  ProfileLocationActivity.this.onSelectedPointAndAddress(point,
-						  addresses.get(item));
+					ProfileLocationActivity.this.onSelectedPointAndAddress(point,
+							addresses.get(item));
 				}
 			}
 		});
