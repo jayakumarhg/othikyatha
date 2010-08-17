@@ -161,13 +161,13 @@ public class ProfileListActivity extends ListActivity {
 				.getMenuInfo();
 		switch (item.getItemId()) {
 		case R.id.edit:
-			long profileId = info.id;
+			int profileId = (int) info.targetView.getId();
 			Intent intent = new Intent("com.beatabout.othikyatha.EDIT_PROFILE");
 			intent.putExtra("profileId", (int) profileId);
 			startActivity(intent);
 			return true;
 		case R.id.delete:
-			dataManager.removeProfileEntry((int) info.id);
+			dataManager.removeProfileEntry((int) info.id); 
 			return true;
 		default:
 			return true;
@@ -198,20 +198,22 @@ public class ProfileListActivity extends ListActivity {
 			txtView.setText(profile.getName());
 
 			v.setClickable(true);
+			v.setFocusable(true);
 			v.setId(profile.getProfileId());
 			v.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					int profileId = v.getId();
-					/*Intent intent = new Intent(
+					Intent intent = new Intent(
 							"com.beatabout.othikyatha.EDIT_PROFILE");
 					intent.putExtra("profileId", profileId);
-					startActivity(intent);*/
+					startActivity(intent);
+					/*
 					AudioManager audioManager = (AudioManager)getSystemService(AUDIO_SERVICE);
 					ProfileManager.applyProfile(dataManager.getProfile(profileId), audioManager, v.getContext().getContentResolver());
+					*/
 				}
 			});
 			v.setLongClickable(true);
-
 			return v;
 		}
 	}

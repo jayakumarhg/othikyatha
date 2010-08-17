@@ -22,7 +22,7 @@ public class Profile  {
     private static final String LOCATIONS_PREF = "locsPref";
 	private static final String NUM_LOCATIONS_PREF = ".num";
 	private static final String LATITUDE_PREF = ".latitude@";
-	private static final String LONGITUDE_PREF = "longitude@";
+	private static final String LONGITUDE_PREF = ".longitude@";
 	
 	private int profileId;
 	private SharedPreferences sharedPreferences;
