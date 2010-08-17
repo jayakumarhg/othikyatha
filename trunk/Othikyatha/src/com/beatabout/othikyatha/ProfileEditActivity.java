@@ -14,31 +14,31 @@ public class ProfileEditActivity extends PreferenceActivity {
 	DataManager dataManager;
 	private LocationsPreference locationsPreference;
 	private int profileId;
-	
-	@Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    addPreferencesFromResource(R.xml.profile);
-    
-    dataManager = new DataManager(new ContextWrapper(getApplicationContext()));
 
-    locationsPreference = (LocationsPreference) findPreference("locsPref");
-    locationsPreference.setAddLocationListener(new AddButtonListener());
-    locationsPreference.setListItemListener(new ListItemListener());
-    locationsPreference.setListItemDeleteListener(new ListItemDeleteListener());
-  }
-	
 	@Override
-  protected void onStart() {
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		addPreferencesFromResource(R.xml.profile);
+
+		dataManager = new DataManager(new ContextWrapper(getApplicationContext()));
+
+		locationsPreference = (LocationsPreference) findPreference("locsPref");
+		locationsPreference.setAddLocationListener(new AddButtonListener());
+		locationsPreference.setListItemListener(new ListItemListener());
+		locationsPreference.setListItemDeleteListener(new ListItemDeleteListener());
+	}
+
+	@Override
+	protected void onStart() {
 		super.onStart();
-		
-    Bundle extras = getIntent().getExtras();
-    profileId = extras.getInt("profileId");
-    
-    String prefName = DataManager.getPreferenceName(profileId);
-    getPreferenceManager().setSharedPreferencesName(prefName);
-    setResult(RESULT_OK, getIntent());
-  }
+
+		Bundle extras = getIntent().getExtras();
+		profileId = extras.getInt("profileId");
+
+		String prefName = DataManager.getPreferenceName(profileId);
+		getPreferenceManager().setSharedPreferencesName(prefName);
+		setResult(RESULT_OK, getIntent());
+	}
 
 	private class AddButtonListener implements OnClickListener {
 		public void onClick(View v) {
@@ -47,7 +47,7 @@ public class ProfileEditActivity extends PreferenceActivity {
 			startActivityForResult(editLocationIntent, 0);
 		}
 	}
-	
+
 	private class ListItemListener implements OnClickListener {
 		public void onClick(View v) {
 			Intent editLocationIntent = new Intent(ProfileEditActivity.this,
@@ -61,7 +61,7 @@ public class ProfileEditActivity extends PreferenceActivity {
 			startActivityForResult(editLocationIntent, 1);
 		}
 	}
-	
+
 	private class ListItemDeleteListener implements OnClickListener {
 		public void onClick(View v) {
 			int index = v.getId();
@@ -72,22 +72,21 @@ public class ProfileEditActivity extends PreferenceActivity {
 			ProfileEditActivity.this.locationsPreference.populateLocations();
 		}
 	}
-	
-	protected void onActivityResult(int requestCode, int resultCode,
-      Intent data) {
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
 			Bundle extras = data.getExtras();
 			if (extras != null) {
 				Profile profile = dataManager.getProfile(profileId);
 				List<Location> locations = profile.getLocations();
-				
+
 				float longitude = extras.getFloat("newLongitude");
 				float latitude = extras.getFloat("newLatitude");
 
 				Location newLocation = null;
 				if (requestCode == 0) {
-				  newLocation = new Location("");
-				  locations.add(newLocation);
+					newLocation = new Location("");
+					locations.add(newLocation);
 				} else {
 					int index = extras.getInt("index");
 					newLocation = locations.get(index);
@@ -95,7 +94,7 @@ public class ProfileEditActivity extends PreferenceActivity {
 				newLocation.setLongitude(longitude);
 				newLocation.setLatitude(latitude);
 				profile.setLocations(locations);
-				
+
 				locationsPreference.populateLocations();
 			}
 		}

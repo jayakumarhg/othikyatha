@@ -48,19 +48,19 @@ public class ProximityAlertManager {
 		locationManager.removeProximityAlert(pendingIntent);
 		pendingIntentsMap.remove(locationAndProfileKey);
 	}
-	
+
 	public void removeAllProximityAlerts() {
 		for (PendingIntent pendingIntent : pendingIntentsMap.values()) {
 			locationManager.removeProximityAlert(pendingIntent);
 		}
 	}
-	
+
 	public void addReIncarnationHook() {
 		PendingIntent intent = getProfileSwitchPendingIntent(-1);
 		int minTime = 4 * 60 * 1000;
 		int minDistance = PROXIMITY_RADIUS_IN_METERS;
-		locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER, minTime, minDistance, intent);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				minTime, minDistance, intent);
 	}
 
 	private PendingIntent getProfileSwitchPendingIntent(int profileId) {

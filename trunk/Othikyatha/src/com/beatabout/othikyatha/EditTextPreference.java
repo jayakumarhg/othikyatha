@@ -11,20 +11,19 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class EditTextPreference extends Preference implements
-		TextWatcher {
+public class EditTextPreference extends Preference implements TextWatcher {
 	public EditTextPreference(Context context) {
 		super(context);
 	}
-	
+
 	public EditTextPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
-	
+
 	public EditTextPreference(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
-	
+
 	@Override
 	protected void onBindView(View view) {
 		super.onBindView(view);
@@ -34,10 +33,9 @@ public class EditTextPreference extends Preference implements
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setText(getTitle());
 	}
-	
-	public void onProgressChanged(SeekBar seekBar, int progress,
-			boolean fromUser) {
-		SharedPreferences.Editor editor =  getEditor();
+
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+		SharedPreferences.Editor editor = getEditor();
 		editor.putInt(getKey(), progress);
 		editor.commit();
 	}
@@ -45,12 +43,11 @@ public class EditTextPreference extends Preference implements
 	public void afterTextChanged(Editable s) {
 	}
 
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 	}
 
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
-		SharedPreferences.Editor editor =  getEditor();
+		SharedPreferences.Editor editor = getEditor();
 		editor.putString(getKey(), s.toString());
 		editor.commit();
 	}

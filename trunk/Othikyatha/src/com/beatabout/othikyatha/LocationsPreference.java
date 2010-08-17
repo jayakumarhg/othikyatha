@@ -26,67 +26,69 @@ public class LocationsPreference extends Preference {
 
 	public LocationsPreference(Context context) {
 		super(context);
-    dataManager = new DataManager(new ContextWrapper(context));
+		dataManager = new DataManager(new ContextWrapper(context));
 	}
-	
+
 	public LocationsPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
-    dataManager = new DataManager(new ContextWrapper(context));
+		dataManager = new DataManager(new ContextWrapper(context));
 	}
-	
+
 	public LocationsPreference(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-    dataManager = new DataManager(new ContextWrapper(context));
+		dataManager = new DataManager(new ContextWrapper(context));
 	}
-	
+
 	@Override
 	protected void onBindView(View view) {
 		super.onBindView(view);
-		
+
 		textView = (TextView) view.findViewById(R.id.title);
 		textView.setText(getTitle());
 		addButton = (Button) view.findViewById(R.id.addlocation);
 		if (addButtonListener != null) {
 			addButton.setOnClickListener(addButtonListener);
 		}
-		
+
 		locationsList = (LinearLayout) view.findViewById(R.id.locationlist);
 		populateLocations();
 	}
 
 	public void populateLocations() {
 		locationsList.removeAllViews();
-		
+
 		// Arbitrary profile id - 0 just to get profile data.
-		Profile profile = new Profile(0, getPreferenceManager().getSharedPreferences());
-		
+		Profile profile = new Profile(0, getPreferenceManager()
+				.getSharedPreferences());
+
 		// Add all the location items
 		List<Location> locations = profile.getLocations();
 		for (int i = 0; i < locations.size(); ++i) {
 			float latitude = (float) locations.get(i).getLatitude();
 			float longitude = (float) locations.get(i).getLongitude();
 			String locationString = "(" + latitude + ", " + longitude + ")";
-			
-			View view =
-			    LayoutInflater.from(getContext()).inflate(R.layout.listitem, null);
+
+			View view = LayoutInflater.from(getContext()).inflate(R.layout.listitem,
+					null);
 			TextView txtView = (TextView) view.findViewById(R.id.title);
 			txtView.setText(locationString);
-			txtView.setTextAppearance(getContext(), android.R.attr.textAppearanceSmall);
-			
+			txtView.setTextAppearance(getContext(),
+					android.R.attr.textAppearanceSmall);
+
 			txtView.setClickable(true);
 			txtView.setFocusable(true);
-    	txtView.setId(i);
-    	if (listItemListener != null) {
-      	txtView.setOnClickListener(listItemListener);
-    	}
-    	
-    	ImageView imageView = (ImageView) view.findViewById(R.id.delete);
-    	imageView.setId(i);
-    	imageView.setClickable(true);
-    	if (listItemDeleteListener != null) {
-    		imageView.setOnClickListener(listItemDeleteListener);
-    	}
-		  locationsList.addView(view);
+			txtView.setId(i);
+			if (listItemListener != null) {
+				txtView.setOnClickListener(listItemListener);
+			}
+
+			ImageView imageView = (ImageView) view.findViewById(R.id.delete);
+			imageView.setId(i);
+			imageView.setClickable(true);
+			if (listItemDeleteListener != null) {
+				imageView.setOnClickListener(listItemDeleteListener);
+			}
+			locationsList.addView(view);
 		}
 		locationsList.requestLayout();
 	}
@@ -98,7 +100,7 @@ public class LocationsPreference extends Preference {
 	public void setListItemListener(OnClickListener onClickListener) {
 		listItemListener = onClickListener;
 	}
-	
+
 	public void setListItemDeleteListener(OnClickListener onClickListener) {
 		listItemDeleteListener = onClickListener;
 	}
