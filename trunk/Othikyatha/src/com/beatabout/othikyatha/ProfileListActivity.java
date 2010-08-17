@@ -165,7 +165,7 @@ public class ProfileListActivity extends ListActivity {
 			startActivity(intent);
 			return true;
 		case R.id.delete:
-			dataManager.removeProfileEntry((int) info.id);
+			dataManager.removeProfileEntry((int) info.targetView.getId());
 			return true;
 		default:
 			return true;
