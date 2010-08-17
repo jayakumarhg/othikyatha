@@ -19,7 +19,7 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
   
 	public LocationItemizedOverlay(Drawable defaultMarker,
 			ProfileLocationActivity profileLocationActivity) {
-		super(boundCenterBottom(defaultMarker));
+		super(boundCenter(defaultMarker));
 		this.profileLocationActivity = profileLocationActivity;
 	}
 
@@ -28,19 +28,19 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		return overlayItems.get(i);
 	}
 
-	public void setPreviousOverlayItem(double longitude, double latitude) {
+	public void setPreviousOverlayItem(double latitude, double longitude) {
     if (prevOverlayItem != null) {
     	overlayItems.remove(prevOverlayItem);
     }
     
-		GeoPoint point = new GeoPoint((int)(longitude * 1E6), (int)(latitude * 1E6));
+		GeoPoint point = new GeoPoint((int)(latitude * 1E6), (int)(longitude * 1E6));
     prevOverlayItem = new OverlayItem(point, "Old selection", "");
     overlayItems.add(prevOverlayItem);
     populate();
 	}
 
 	protected void setCurrentOverlayItem(double longitude, double latitude) {
-		GeoPoint point = new GeoPoint((int)(longitude * 1E6), (int)(latitude * 1E6));
+		GeoPoint point = new GeoPoint((int)(latitude * 1E6), (int)(longitude * 1E6));
 		setCurrentOverlayItem(point);
 	}
 	

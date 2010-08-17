@@ -25,6 +25,7 @@ public class ProfileEditActivity extends PreferenceActivity {
     locationsPreference = (LocationsPreference) findPreference("locsPref");
     locationsPreference.setAddLocationListener(new AddButtonListener());
     locationsPreference.setListItemListener(new ListItemListener());
+    locationsPreference.setListItemDeleteListener(new ListItemDeleteListener());
   }
 	
 	@Override
@@ -54,30 +55,49 @@ public class ProfileEditActivity extends PreferenceActivity {
 			int id = v.getId();
 			Profile profile = dataManager.getProfile(profileId);
 			Location location = profile.getLocations().get(id);
+			editLocationIntent.putExtra("index", id);
 			editLocationIntent.putExtra("longitude", (float) location.getLongitude());
 			editLocationIntent.putExtra("latitude", (float) location.getLatitude());
 			startActivityForResult(editLocationIntent, 1);
 		}
 	}
 	
+	private class ListItemDeleteListener implements OnClickListener {
+		public void onClick(View v) {
+			int index = v.getId();
+			Profile profile = dataManager.getProfile(profileId);
+			List<Location> locations = profile.getLocations();
+			locations.remove(index);
+			profile.setLocations(locations);
+			ProfileEditActivity.this.locationsPreference.populateLocations();
+		}
+	}
+	
 	protected void onActivityResult(int requestCode, int resultCode,
       Intent data) {
-		if (requestCode == 0 && resultCode == RESULT_OK) {
+		if (resultCode == RESULT_OK) {
 			Bundle extras = data.getExtras();
 			if (extras != null) {
-				float longitude = extras.getFloat("newLongitude");
-				float latitude = extras.getFloat("newLatitude");
-				
-				Location newLocation = new Location("");
-				newLocation.setLongitude(longitude);
-				newLocation.setLatitude(latitude);
-				
 				Profile profile = dataManager.getProfile(profileId);
 				List<Location> locations = profile.getLocations();
-				locations.add(newLocation);
+				
+				float longitude = extras.getFloat("newLongitude");
+				float latitude = extras.getFloat("newLatitude");
+
+				Location newLocation = null;
+				if (requestCode == 0) {
+				  newLocation = new Location("");
+				  locations.add(newLocation);
+				} else {
+					int index = extras.getInt("index");
+					newLocation = locations.get(index);
+				}
+				newLocation.setLongitude(longitude);
+				newLocation.setLatitude(latitude);
 				profile.setLocations(locations);
+				
+				locationsPreference.populateLocations();
 			}
 		}
-		locationsPreference.populateLocations();
 	}
 }
