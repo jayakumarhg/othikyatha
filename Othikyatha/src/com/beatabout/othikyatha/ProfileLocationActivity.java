@@ -16,6 +16,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -45,23 +46,23 @@ public class ProfileLocationActivity extends MapActivity {
 	protected void onStart() {
 		super.onStart();
 
-		double longitude = 0.0;
-		double latitude = 0.0;
+		double longitude = -90.0;
+		double latitude = -90.0;
 
-		GeoPoint point = myLocationOverlay.getMyLocation();
-		if (point != null) {
-			mapView.getController().setCenter(point);
+		Location location = myLocationOverlay.getLastFix();
+		if (location != null) {
+			centerLocation(location.getLatitude(), location.getLongitude());
 		}
 
 		// Existing location
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			latitude = extras.getFloat("latitude");
-			longitude = extras.getFloat("longitude");
-			if (longitude != 0 || latitude != 0) {
+			latitude = extras.getFloat("latitude", -90.0f);
+			longitude = extras.getFloat("longitude", -90.0f);
+			if (longitude != -90.0 || latitude != -90.0) {
+				centerLocation(latitude, longitude);
 				itemizedOverlay.setPreviousOverlayItem(latitude, longitude);
 			}
-			centerLocation(latitude, longitude);
 		}
 
 		List<Overlay> mapOverlays = mapView.getOverlays();
@@ -81,7 +82,11 @@ public class ProfileLocationActivity extends MapActivity {
 	}
 
 	public void setSelectedGeoPoint(GeoPoint point) {
-		showReverseGeoCoderMenu(point);
+		mapView.getController().animateTo(point);
+		boolean more = mapView.getController().zoomIn();
+		if (!more) {
+		  showReverseGeoCoderMenu(point);
+		}
 	}
 
 	public void onSelectedPointAndAddress(GeoPoint point, Address address) {
@@ -112,7 +117,7 @@ public class ProfileLocationActivity extends MapActivity {
 		items[0] = "None - Select a point again";
 		int i = 1;
 		for (Address address : addresses) {
-			items[i++] = address.getFeatureName();
+			items[i++] = address.toString();
 		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -21,6 +21,7 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 			ProfileLocationActivity profileLocationActivity) {
 		super(boundCenter(defaultMarker));
 		this.profileLocationActivity = profileLocationActivity;
+		populate();
 	}
 
 	@Override
@@ -29,12 +30,16 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	}
 
 	public void setPreviousOverlayItem(double latitude, double longitude) {
+		GeoPoint point = new GeoPoint((int) (latitude * 1E6),
+				(int) (longitude * 1E6));
+		setPreviousOverlayItem(point);
+	}
+
+	protected void setPreviousOverlayItem(GeoPoint point) {
 		if (prevOverlayItem != null) {
 			overlayItems.remove(prevOverlayItem);
 		}
-
-		GeoPoint point = new GeoPoint((int) (latitude * 1E6),
-				(int) (longitude * 1E6));
+		
 		prevOverlayItem = new OverlayItem(point, "Old selection", "");
 		overlayItems.add(prevOverlayItem);
 		populate();
@@ -62,8 +67,8 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 
 	@Override
 	protected boolean onTap(int pIndex) {
-		if (overlayItems.get(pIndex) == currOverlayItem) {
-			profileLocationActivity.setSelectedGeoPoint(currOverlayItem.getPoint());
+		if (overlayItems.get(pIndex) != null) {
+			profileLocationActivity.setSelectedGeoPoint(overlayItems.get(pIndex).getPoint());
 			return true;
 		}
 		return false;
@@ -76,7 +81,7 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				GeoPoint newPoint = mapView.getProjection().fromPixels(
 						(int) event.getX(), (int) event.getY());
 				setCurrentOverlayItem(newPoint);
-				profileLocationActivity.setSelectedGeoPoint(currOverlayItem.getPoint());
+			  profileLocationActivity.setSelectedGeoPoint(currOverlayItem.getPoint());
 				return true;
 			}
 		}
