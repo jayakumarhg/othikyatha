@@ -20,8 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ProfileListActivity extends ListActivity {
@@ -187,31 +188,43 @@ public class ProfileListActivity extends ListActivity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
 			if (v == null) {
-				v = inflater.inflate(android.R.layout.simple_list_item_single_choice,
-						null);
+				v = inflater.inflate(R.layout.listitem, null);
 			}
 			Profile profile = profiles.get(position);
 
-			CheckedTextView txtView = (CheckedTextView) v;
+			TextView txtView = (TextView) v.findViewById(R.id.title);
 			txtView.setText(profile.getName());
-
-			v.setClickable(true);
-			v.setFocusable(true);
-			v.setId(profile.getProfileId());
-			v.setOnClickListener(new View.OnClickListener() {
+			txtView.setTextAppearance(getContext(), android.R.style.TextAppearance_Large);
+			txtView.setClickable(true);
+			txtView.setId(profile.getProfileId());
+			txtView.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					if (dataManager.getManualMode()) {
+						int profileId = v.getId();
+						AudioManager audioManager =
+						(AudioManager)getSystemService(AUDIO_SERVICE);
+						ProfileManager.applyProfile(dataManager.getProfile(profileId),
+								audioManager, v.getContext().getContentResolver());
+					}
+				}
+			});
+			txtView.setFocusable(true);
+			
+			ImageView imageView = (ImageView) v.findViewById(R.id.image);
+			imageView.setImageResource(android.R.drawable.ic_menu_edit);
+			imageView.setClickable(true);
+			imageView.setId(profile.getProfileId());
+			imageView.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					int profileId = v.getId();
 					Intent intent = new Intent("com.beatabout.othikyatha.EDIT_PROFILE");
 					intent.putExtra("profileId", profileId);
 					startActivity(intent);
-					/*
-					 * AudioManager audioManager =
-					 * (AudioManager)getSystemService(AUDIO_SERVICE);
-					 * ProfileManager.applyProfile(dataManager.getProfile(profileId),
-					 * audioManager, v.getContext().getContentResolver());
-					 */
 				}
 			});
+
+			v.setId(profile.getProfileId());
+			v.setFocusable(true);			
 			v.setLongClickable(true);
 			return v;
 		}
