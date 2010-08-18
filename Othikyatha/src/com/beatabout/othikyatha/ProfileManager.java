@@ -2,7 +2,6 @@ package com.beatabout.othikyatha;
 
 import android.content.ContentResolver;
 import android.media.AudioManager;
-import android.provider.Settings;
 
 // Apply profile
 public class ProfileManager {
@@ -21,8 +20,8 @@ public class ProfileManager {
 		setStreamVolume(audioManager, AudioManager.STREAM_VOICE_CALL,
 				profile.getVoiceVolume());
 
-		Settings.System.putString(context, Settings.System.RINGTONE,
-				profile.getRingTone());
+		// Settings.System.putString(context, Settings.System.RINGTONE,
+		//		profile.getRingTone());
 
 		if (profile.getSilent()) {
 			audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
