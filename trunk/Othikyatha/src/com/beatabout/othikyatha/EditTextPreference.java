@@ -8,7 +8,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class EditTextPreference extends Preference implements TextWatcher {
@@ -34,18 +33,15 @@ public class EditTextPreference extends Preference implements TextWatcher {
 		title.setText(getTitle());
 	}
 
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		SharedPreferences.Editor editor = getEditor();
-		editor.putInt(getKey(), progress);
-		editor.commit();
-	}
-
+	@Override
 	public void afterTextChanged(Editable s) {
 	}
 
+	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 	}
 
+	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
 		SharedPreferences.Editor editor = getEditor();
 		editor.putString(getKey(), s.toString());
