@@ -83,6 +83,7 @@ public class LocationsPreference extends Preference {
 			}
 
 			ImageView imageView = (ImageView) view.findViewById(R.id.delete);
+			imageView.setImageResource(android.R.drawable.ic_delete);
 			imageView.setId(i);
 			imageView.setClickable(true);
 			if (listItemDeleteListener != null) {
