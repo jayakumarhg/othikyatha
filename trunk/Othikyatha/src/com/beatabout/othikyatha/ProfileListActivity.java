@@ -202,7 +202,7 @@ public class ProfileListActivity extends ListActivity {
 						int profileId = v.getId();
 						Intent intent = new Intent("com.beatabout.othikyatha.SWITCH_PROFILE");
 						intent.putExtra("profileId", profileId);
-						startActivity(intent);
+						v.getContext().startService(intent);
 					}
 				}
 			});
