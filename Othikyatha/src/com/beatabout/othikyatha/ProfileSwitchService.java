@@ -1,6 +1,6 @@
 package com.beatabout.othikyatha;
 
-import android.app.Activity;
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -12,17 +12,19 @@ import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.Bundle;
 
-public class ProfileSwitchActivity extends Activity {
+public class ProfileSwitchService extends IntentService {
 	public static int PROFILE_SWITCH_NOTIFY_ID = 0;
 	private NotificationManager nm;
 	private DataManager dataManager;
 	private ProximityAlertManager proximityAlertManager;
 
+	public ProfileSwitchService() {
+		super("Profile Switch");
+	}
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		this.moveTaskToBack(true);
-
-		super.onCreate(savedInstanceState);
+	public void onCreate() {
+		super.onCreate();
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
@@ -32,11 +34,8 @@ public class ProfileSwitchActivity extends Activity {
 	}
 
 	@Override
-	protected void onStart() {
-		this.moveTaskToBack(true);
-
-		super.onStart();
-		Bundle extras = getIntent().getExtras();
+	protected void onHandleIntent(Intent intent) {
+		Bundle extras = intent.getExtras();
 		int profileId = extras.getInt(ProximityAlertManager.PROFILE_ID);
 
 		if (profileId < 0) {
@@ -50,25 +49,22 @@ public class ProfileSwitchActivity extends Activity {
 		}
 
 		boolean entering = extras
-				.getBoolean(LocationManager.KEY_PROXIMITY_ENTERING);
+				.getBoolean(LocationManager.KEY_PROXIMITY_ENTERING, true);
 
 		int icon = R.drawable.icon;
 		Profile profile = dataManager.getProfile(profileId);
 		CharSequence tickerText = "Profile changed"
-				+ (entering ? " to " : " from ") + profile.getName() + "(" + profileId
-				+ ")";
+				+ (entering ? " to " : " from ") + profile.getName();
 		Notification notification = new Notification(icon, tickerText,
 				System.currentTimeMillis() + 5000);
-		Intent intent = new Intent(this, ProfileListActivity.class);
+		Intent intent1 = new Intent(this, ProfileListActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(
-				getApplicationContext(), 0, intent, 0);
+				getApplicationContext(), 0, intent1, 0);
 		notification.setLatestEventInfo(getApplicationContext(), "Profile Changed",
 				tickerText, contentIntent);
 		nm.notify(PROFILE_SWITCH_NOTIFY_ID + profileId * 2 + (entering ? 1 : 0),
 				notification);
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		ProfileManager.applyProfile(profile, audioManager, getContentResolver());
-		// this.finish();
 	}
-
 }

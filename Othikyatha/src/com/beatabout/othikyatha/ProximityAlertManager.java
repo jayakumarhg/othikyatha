@@ -14,8 +14,7 @@ import android.location.LocationManager;
 public class ProximityAlertManager {
 	public static final int PROXIMITY_RADIUS_IN_METERS = 30;
 	public static final int PROXIMITY_EXPIRATION = -1;
-	public static final String PROFILE_ID = "com.beatabout.othikyatha:"
-			+ "profileId";
+	public static final String PROFILE_ID = "profileId";
 	public static final String PROFILE_SWITCH_INTENT = "com.beatabout.othikyatha.SWITCH_PROFILE";
 
 	private Context context;
@@ -67,7 +66,7 @@ public class ProximityAlertManager {
 		Intent intent = new Intent(PROFILE_SWITCH_INTENT);
 		intent.putExtra(PROFILE_ID, profileId);
 
-		PendingIntent pendingIntent = PendingIntent.getActivity(context,
+		PendingIntent pendingIntent = PendingIntent.getService(context,
 				requestCode.get(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		return pendingIntent;
 	}

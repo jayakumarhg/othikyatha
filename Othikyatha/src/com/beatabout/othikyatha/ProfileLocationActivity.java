@@ -1,7 +1,6 @@
 package com.beatabout.othikyatha;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,7 +17,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.widget.Toast;
 
 public class ProfileLocationActivity extends MapActivity {
 	private LocationItemizedOverlay itemizedOverlay;
