@@ -9,7 +9,6 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -201,10 +200,9 @@ public class ProfileListActivity extends ListActivity {
 				public void onClick(View v) {
 					if (dataManager.getManualMode()) {
 						int profileId = v.getId();
-						AudioManager audioManager =
-						(AudioManager)getSystemService(AUDIO_SERVICE);
-						ProfileManager.applyProfile(dataManager.getProfile(profileId),
-								audioManager, v.getContext().getContentResolver());
+						Intent intent = new Intent("com.beatabout.othikyatha.SWITCH_PROFILE");
+						intent.putExtra("profileId", profileId);
+						startActivity(intent);
 					}
 				}
 			});
