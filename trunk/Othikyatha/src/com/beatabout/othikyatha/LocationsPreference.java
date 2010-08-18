@@ -82,7 +82,7 @@ public class LocationsPreference extends Preference {
 				txtView.setOnClickListener(listItemListener);
 			}
 
-			ImageView imageView = (ImageView) view.findViewById(R.id.delete);
+			ImageView imageView = (ImageView) view.findViewById(R.id.image);
 			imageView.setImageResource(android.R.drawable.ic_delete);
 			imageView.setId(i);
 			imageView.setClickable(true);
