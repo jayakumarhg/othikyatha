@@ -62,11 +62,14 @@ public class LocationsPreference extends Preference {
 				.getSharedPreferences());
 
 		// Add all the location items
-		List<Location> locations = profile.getLocations();
+		List<GeoAddress> locations = profile.getLocations();
 		for (int i = 0; i < locations.size(); ++i) {
 			float latitude = (float) locations.get(i).getLatitude();
 			float longitude = (float) locations.get(i).getLongitude();
-			String locationString = "(" + latitude + ", " + longitude + ")";
+			String locationString = locations.get(i).getAddress();
+			if (locationString.length() == 0) {
+			  locationString = "(" + latitude + ", " + longitude + ")";
+			}
 
 			View view = LayoutInflater.from(getContext()).inflate(R.layout.listitem,
 					null);

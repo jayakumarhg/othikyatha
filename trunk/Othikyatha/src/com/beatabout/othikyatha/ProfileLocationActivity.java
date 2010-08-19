@@ -87,7 +87,7 @@ public class ProfileLocationActivity extends MapActivity {
 		}
 	}
 
-	public void onSelectedPointAndAddress(GeoPoint point, Address address) {
+	public void onSelectedPointAndAddress(GeoPoint point, CharSequence address) {
 		if (point == null) {
 			setResult(RESULT_CANCELED, getIntent());
 		} else {
@@ -95,6 +95,7 @@ public class ProfileLocationActivity extends MapActivity {
 			float longitude = (float) (point.getLongitudeE6() / 1E6);
 			getIntent().putExtra("newLatitude", latitude);
 			getIntent().putExtra("newLongitude", longitude);
+			getIntent().putExtra("newAddress", address);
 			setResult(RESULT_OK, getIntent());
 		}
 		this.finish();
@@ -115,16 +116,20 @@ public class ProfileLocationActivity extends MapActivity {
 		items[0] = "None - Select a point again";
 		int i = 1;
 		for (Address address : addresses) {
-			items[i++] = address.toString();
+			String addressLine = "";
+			for (int j = 0; j < address.getMaxAddressLineIndex(); ++j) {
+			  addressLine += (j == 0 ? "" : ", ") + address.getAddressLine(j); 
+			}
+			items[i++] = addressLine;
 		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Pick a location name");
 		builder.setItems(items, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int item) {
-				if (item != 0) {
+			public void onClick(DialogInterface dialog, int index) {
+				if (index != 0) {
 					ProfileLocationActivity.this.onSelectedPointAndAddress(point,
-							addresses.get(item));
+							items[index]);
 				}
 			}
 		});
