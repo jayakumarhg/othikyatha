@@ -57,6 +57,7 @@ public class ProfileSwitchService extends IntentService {
 				+ (entering ? " to " : " from ") + profile.getName();
 		Notification notification = new Notification(icon, tickerText,
 				System.currentTimeMillis() + 5000);
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		Intent intent1 = new Intent(this, ProfileListActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(
 				getApplicationContext(), 0, intent1, 0);
