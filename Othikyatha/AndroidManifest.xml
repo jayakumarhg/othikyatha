@@ -17,19 +17,21 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</service>
-		
+
 		<activity android:name="ProfileEditActivity" android:label="@string/profile_edit">
 		  <intent-filter>
 		    <action android:name="com.beatabout.othikyatha.EDIT_PROFILE"></action>
 		    <category android:name="android.intent.category.DEFAULT"></category>
 		  </intent-filter>
 		</activity>
+
 		<activity android:name="ProfileLocationActivity" android:label="@string/profile_edit">
 		  <intent-filter>
 		    <action android:name="com.beatabout.othikyatha.EDIT_PROFILE_LOCATION"></action>
 		    <category android:name="android.intent.category.DEFAULT"></category>
 		  </intent-filter>
 		</activity>
+
 		<uses-library android:name="com.google.android.maps" />
 	</application>
 

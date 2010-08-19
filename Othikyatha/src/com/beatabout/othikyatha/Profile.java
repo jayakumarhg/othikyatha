@@ -23,6 +23,7 @@ public class Profile {
 	private static final String NUM_LOCATIONS_PREF = ".num";
 	private static final String LATITUDE_PREF = ".latitude@";
 	private static final String LONGITUDE_PREF = ".longitude@";
+	private static final String ADDRESS_PREF = ".address@";
 
 	private int profileId;
 	private SharedPreferences sharedPreferences;
@@ -100,33 +101,37 @@ public class Profile {
 		return getName();
 	}
 
-	List<Location> getLocations() {
-		ArrayList<Location> locations = new ArrayList<Location>();
+	List<GeoAddress> getLocations() {
+		ArrayList<GeoAddress> geoAddresses = new ArrayList<GeoAddress>();
 		int size = sharedPreferences.getInt(LOCATIONS_PREF + NUM_LOCATIONS_PREF, 0);
 		for (int i = 0; i < size; ++i) {
-			Location location = new Location("");
+			GeoAddress geoAddress = new GeoAddress();
 			float latitude = sharedPreferences.getFloat(LOCATIONS_PREF
 					+ LATITUDE_PREF + i, 0.0f);
 			float longitude = sharedPreferences.getFloat(LOCATIONS_PREF
 					+ LONGITUDE_PREF + i, 0.0f);
-			location.setLatitude(latitude);
-			location.setLongitude(longitude);
+			String address = sharedPreferences.getString(LOCATIONS_PREF
+					+ ADDRESS_PREF + i, "");
+			geoAddress.setLatitude(latitude);
+			geoAddress.setLongitude(longitude);
+			geoAddress.setAddress(address);
 
-			locations.add(location);
+			geoAddresses.add(geoAddress);
 		}
-		return locations;
+		return geoAddresses;
 	}
 
-	void setLocations(List<Location> locations) {
+	void setLocations(List<GeoAddress> locations) {
 		SharedPreferences.Editor editor = sharedPreferences.edit();
 		editor.putInt(LOCATIONS_PREF + NUM_LOCATIONS_PREF, locations.size());
 
 		int i = 0;
-		for (Location location : locations) {
+		for (GeoAddress geoAddress : locations) {
 			editor.putFloat(LOCATIONS_PREF + LATITUDE_PREF + i,
-					(float) location.getLatitude());
+					(float) geoAddress.getLatitude());
 			editor.putFloat(LOCATIONS_PREF + LONGITUDE_PREF + i,
-					(float) location.getLongitude());
+					(float) geoAddress.getLongitude());
+			editor.putString(LOCATIONS_PREF + ADDRESS_PREF + i, geoAddress.getAddress());
 			i++;
 		}
 		editor.commit();

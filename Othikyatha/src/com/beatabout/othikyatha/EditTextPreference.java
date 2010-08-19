@@ -33,15 +33,12 @@ public class EditTextPreference extends Preference implements TextWatcher {
 		title.setText(getTitle());
 	}
 
-	@Override
 	public void afterTextChanged(Editable s) {
 	}
 
-	@Override
 	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 	}
 
-	@Override
 	public void onTextChanged(CharSequence s, int start, int before, int count) {
 		SharedPreferences.Editor editor = getEditor();
 		editor.putString(getKey(), s.toString());

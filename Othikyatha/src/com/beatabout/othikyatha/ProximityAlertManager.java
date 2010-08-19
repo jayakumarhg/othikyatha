@@ -8,7 +8,6 @@ import java.util.Collections;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.location.LocationManager;
 
 public class ProximityAlertManager {
@@ -31,7 +30,7 @@ public class ProximityAlertManager {
 				.synchronizedMap(new HashMap<String, PendingIntent>());
 	}
 
-	public void addProximityAlertForProfile(Location location, int profileId) {
+	public void addProximityAlertForProfile(GeoAddress location, int profileId) {
 		PendingIntent pendingIntent = getProfileSwitchPendingIntent(profileId);
 		requestCode.incrementAndGet();
 		String locationAndProfileKey = getLocationAndProfileKey(location, profileId);
@@ -41,7 +40,7 @@ public class ProximityAlertManager {
 				PROXIMITY_EXPIRATION, pendingIntent);
 	}
 
-	public void removeProximityAlertForProfile(Location location, int profileId) {
+	public void removeProximityAlertForProfile(GeoAddress location, int profileId) {
 		String locationAndProfileKey = getLocationAndProfileKey(location, profileId);
 		PendingIntent pendingIntent = pendingIntentsMap.get(locationAndProfileKey);
 		locationManager.removeProximityAlert(pendingIntent);
@@ -71,7 +70,7 @@ public class ProximityAlertManager {
 		return pendingIntent;
 	}
 
-	private String getLocationAndProfileKey(Location location, int profileId) {
+	private String getLocationAndProfileKey(GeoAddress location, int profileId) {
 		String key = "key:" + location.getLatitude() + ":"
 				+ location.getLongitude() + ":" + profileId;
 		return key;

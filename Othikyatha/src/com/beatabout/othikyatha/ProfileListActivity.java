@@ -51,7 +51,7 @@ public class ProfileListActivity extends ListActivity {
 		setListAdapter(newListAdapter());
 		// Move this to code to proximityalertactivity
 		for (Profile profile : dataManager.getAllActiveProfiles()) {
-			for (Location location : profile.getLocations()) {
+			for (GeoAddress location : profile.getLocations()) {
 				proximityAlertManager.addProximityAlertForProfile(location,
 						profile.getProfileId());
 			}
@@ -61,17 +61,15 @@ public class ProfileListActivity extends ListActivity {
 	private void createDefaultProfiles() {
 		int profileId;
 		Profile profile;
-		Location location;
-		ArrayList<Location> locations;
+		GeoAddress location;
+		ArrayList<GeoAddress> locations;
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
 		profile.setRingVolume(10);
 		profile.setName("Default");
-		location = new Location("");
-		location.setLatitude(13);
-		location.setLongitude(13);
-		locations = new ArrayList<Location>();
+		location = new GeoAddress(13, 26);
+		locations = new ArrayList<GeoAddress>();
 		locations.add(location);
 		profile.setLocations(locations);
 
@@ -79,10 +77,8 @@ public class ProfileListActivity extends ListActivity {
 		profile = dataManager.getProfile(profileId);
 		profile.setRingVolume(40);
 		profile.setName("Home");
-		location = new Location("");
-		location.setLatitude(41);
-		location.setLongitude(41);
-		locations = new ArrayList<Location>();
+		location = new GeoAddress(42, 41);
+		locations = new ArrayList<GeoAddress>();
 		locations.add(location);
 		profile.setLocations(locations);
 
@@ -90,10 +86,8 @@ public class ProfileListActivity extends ListActivity {
 		profile = dataManager.getProfile(profileId);
 		profile.setRingVolume(80);
 		profile.setName("Work");
-		location = new Location("");
-		location.setLatitude(80);
-		location.setLongitude(80);
-		locations = new ArrayList<Location>();
+		location = new GeoAddress(80, 81);
+		locations = new ArrayList<GeoAddress>();
 		locations.add(location);
 		profile.setLocations(locations);
 	}

@@ -54,7 +54,7 @@ public class ProfileEditActivity extends PreferenceActivity {
 					ProfileLocationActivity.class);
 			int id = v.getId();
 			Profile profile = dataManager.getProfile(profileId);
-			Location location = profile.getLocations().get(id);
+			GeoAddress location = profile.getLocations().get(id);
 			editLocationIntent.putExtra("index", id);
 			editLocationIntent.putExtra("longitude", (float) location.getLongitude());
 			editLocationIntent.putExtra("latitude", (float) location.getLatitude());
@@ -66,7 +66,7 @@ public class ProfileEditActivity extends PreferenceActivity {
 		public void onClick(View v) {
 			int index = v.getId();
 			Profile profile = dataManager.getProfile(profileId);
-			List<Location> locations = profile.getLocations();
+			List<GeoAddress> locations = profile.getLocations();
 			locations.remove(index);
 			profile.setLocations(locations);
 			ProfileEditActivity.this.locationsPreference.populateLocations();
@@ -78,14 +78,15 @@ public class ProfileEditActivity extends PreferenceActivity {
 			Bundle extras = data.getExtras();
 			if (extras != null) {
 				Profile profile = dataManager.getProfile(profileId);
-				List<Location> locations = profile.getLocations();
+				List<GeoAddress> locations = profile.getLocations();
 
 				float longitude = extras.getFloat("newLongitude");
 				float latitude = extras.getFloat("newLatitude");
+				String address = extras.getString("newAddress");
 
-				Location newLocation = null;
+				GeoAddress newLocation = null;
 				if (requestCode == 0) {
-					newLocation = new Location("");
+					newLocation = new GeoAddress();
 					locations.add(newLocation);
 				} else {
 					int index = extras.getInt("index");
@@ -93,6 +94,7 @@ public class ProfileEditActivity extends PreferenceActivity {
 				}
 				newLocation.setLongitude(longitude);
 				newLocation.setLatitude(latitude);
+				newLocation.setAddress(address);
 				profile.setLocations(locations);
 
 				locationsPreference.populateLocations();
