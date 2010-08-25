@@ -39,7 +39,7 @@ public class ProfileSwitchService extends IntentService {
 		int profileId = extras.getInt(ProximityAlertManager.PROFILE_ID);
 
 		if (profileId < 0) {
-			for (Profile profile : dataManager.getAllActiveProfiles()) {
+			for (Profile profile : dataManager.getAllProfiles()) {
 				for (GeoAddress location : profile.getLocations()) {
 					proximityAlertManager.addProximityAlertForProfile(location,
 							profile.getProfileId());

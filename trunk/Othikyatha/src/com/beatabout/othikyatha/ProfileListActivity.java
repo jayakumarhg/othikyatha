@@ -40,7 +40,7 @@ public class ProfileListActivity extends ListActivity {
 		proximityAlertManager = new ProximityAlertManager(getApplicationContext(),
 				locationManager);
 
-		if (dataManager.hasNoActiveProfiles()) {
+		if (dataManager.hasNoProfiles()) {
 			createDefaultProfiles();
 		}
 		registerForContextMenu(getListView());
@@ -50,7 +50,7 @@ public class ProfileListActivity extends ListActivity {
 		super.onStart();
 		setListAdapter(newListAdapter());
 		// Move this to code to proximityalertactivity
-		for (Profile profile : dataManager.getAllActiveProfiles()) {
+		for (Profile profile : dataManager.getAllProfiles()) {
 			for (GeoAddress location : profile.getLocations()) {
 				proximityAlertManager.addProximityAlertForProfile(location,
 						profile.getProfileId());
@@ -93,7 +93,7 @@ public class ProfileListActivity extends ListActivity {
 	}
 
 	private ListAdapter newListAdapter() {
-		Vector<Profile> vprofiles = dataManager.getAllActiveProfiles();
+		Vector<Profile> vprofiles = dataManager.getAllProfiles();
 		Profile[] profiles = new Profile[vprofiles.size()];
 
 		int i = 0;
