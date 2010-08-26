@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.location.LocationManager;
@@ -12,11 +11,11 @@ import android.media.AudioManager;
 import android.os.Bundle;
 
 public class ProfileSwitchService extends IntentService {
+	public static final String PROFILE_SWITCH_INTENT = "com.beatabout.othikyatha.SWITCH_PROFILE";
 	public static int PROFILE_SWITCH_NOTIFY_ID = 0;
 	private NotificationManager nm;
 	private DataManager dataManager;
-	private ProximityAlertManager proximityAlertManager;
-
+	
 	public ProfileSwitchService() {
 		super("Profile Switch");
 	}
@@ -27,25 +26,18 @@ public class ProfileSwitchService extends IntentService {
 		nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
-		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		proximityAlertManager = new ProximityAlertManager(getApplicationContext(),
-				locationManager);
 	}
+	
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+    	onHandleIntent(intent);
+        return START_STICKY;
+    }
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		Bundle extras = intent.getExtras();
-		int profileId = extras.getInt(ProximityAlertManager.PROFILE_ID);
-
-		if (profileId < 0) {
-			for (Profile profile : dataManager.getAllProfiles()) {
-				for (GeoAddress location : profile.getLocations()) {
-					proximityAlertManager.addProximityAlertForProfile(location,
-							profile.getProfileId());
-				}
-			}
-			return;
-		}
+		int profileId = extras.getInt(ProximityAlertService.PROFILE_ID);
 
 		boolean entering = extras
 				.getBoolean(LocationManager.KEY_PROXIMITY_ENTERING, true);

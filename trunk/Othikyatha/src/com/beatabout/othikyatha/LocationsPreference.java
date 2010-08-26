@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.location.Location;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;

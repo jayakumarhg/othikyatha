@@ -5,7 +5,6 @@ import java.util.Vector;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 public class DataManager {
 	public static final String globalPreferencesFile = "globalPrefsFile";
@@ -14,7 +13,6 @@ public class DataManager {
 	public static final String nextId = "nextId";
 	public static final String manualMode = "manualMode";
 	
-	private PreferenceManager manager;
 	private ContextWrapper contextWrapper;
 	private SharedPreferences profileIdPreferences;
 	private SharedPreferences enabledProfilesPreferences;
