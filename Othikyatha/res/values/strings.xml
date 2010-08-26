@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="profile_edit">Camaleo > Edit Profile</string>
-    <string name="profile_list">Camaleo</string>
-    <string name="profile_edit_loc">Camaleo > Edit Profile > Location</string>
-    <string name="app_name">Camaleo</string>
+    <string name="profile_edit">Caméléo > Edit Profile</string>
+    <string name="profile_list">Caméléo</string>
+    <string name="profile_edit_loc">Caméléo > Edit Profile > Location</string>
+    <string name="app_name">Caméléo</string>
 	<string name="name_pref">namePreference</string>
 	<string name="ringtone_pref">ringtonePreference</string>
 	<string name="ring_volume_pref">ringVolumePreference</string>
