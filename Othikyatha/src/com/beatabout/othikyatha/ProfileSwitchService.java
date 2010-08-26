@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -67,5 +66,6 @@ public class ProfileSwitchService extends IntentService {
 				notification);
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 		ProfileManager.applyProfile(profile, audioManager, getContentResolver());
+		dataManager.setActiveProfile(profile);
 	}
 }

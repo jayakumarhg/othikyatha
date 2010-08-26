@@ -92,11 +92,16 @@ public class DataManager {
 	}
 	
 	public void setActiveProfile(Profile profile) {
-		activeProfilePreferences.edit().putInt("activeProfileId", profile.getProfileId());
+		activeProfilePreferences.edit().putInt("activeProfileId", profile.getProfileId()).commit();
 	}
 	
 	public Profile getActiveProfile() {
 		int profileId = activeProfilePreferences.getInt("activeProfileId", -1);
 		return getProfile(profileId);
+	}
+	
+	public int getActiveProfileId() {
+		int profileId = activeProfilePreferences.getInt("activeProfileId", -1);
+		return profileId;
 	}
 }

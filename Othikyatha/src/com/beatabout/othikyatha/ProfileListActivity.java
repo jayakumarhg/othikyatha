@@ -7,6 +7,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -137,6 +139,7 @@ public class ProfileListActivity extends ListActivity {
 		locations = new ArrayList<GeoAddress>();
 		locations.add(location);
 		profile.setLocations(locations);
+		dataManager.setActiveProfile(profile);
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
@@ -204,10 +207,15 @@ public class ProfileListActivity extends ListActivity {
 			txtView.setText(profile.getName());
 			txtView.setTextAppearance(getContext(),
 					android.R.style.TextAppearance_Large);
+			if (profile.getProfileId() == dataManager.getActiveProfileId()) {
+				txtView.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+				txtView.setTextColor(Color.WHITE);
+			} else {
+				txtView.setTextColor(Color.LTGRAY);
+			}
 			txtView.setMaxEms(9);
-			txtView.setClickable(true);
 			txtView.setId(profile.getProfileId());
-			txtView.setOnClickListener(new View.OnClickListener() {
+			v.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					if (dataManager.getManualMode()) {
 						int profileId = v.getId();
@@ -215,12 +223,11 @@ public class ProfileListActivity extends ListActivity {
 								"com.beatabout.othikyatha.SWITCH_PROFILE");
 						intent.putExtra("profileId", profileId);
 						v.getContext().startService(intent);
+						dataManager.setActiveProfile(dataManager.getProfile(profileId));
+						reloadProfileList();
 					}
 				}
 			});
-			txtView.setFocusable(true);
-			txtView.setFocusableInTouchMode(true);
-			txtView.setLongClickable(true);
 
 			ImageView imageView = (ImageView) v.findViewById(R.id.image);
 			imageView.setImageResource(android.R.drawable.ic_menu_edit);
@@ -234,8 +241,6 @@ public class ProfileListActivity extends ListActivity {
 			});
 
 			v.setId(profile.getProfileId());
-			v.setFocusable(true);
-			v.setFocusableInTouchMode(true);
 			v.setClickable(true);
 			v.setLongClickable(true);
 			
