@@ -68,33 +68,37 @@ public class LocationsPreference extends Preference {
 			float longitude = (float) locations.get(i).getLongitude();
 			String locationString = locations.get(i).getAddress();
 			if (locationString.length() == 0) {
-			  locationString = "(" + latitude + ", " + longitude + ")";
+				locationString = "(" + latitude + ", " + longitude + ")";
 			}
-
-			View view = LayoutInflater.from(getContext()).inflate(R.layout.listitem,
-					null);
-			TextView txtView = (TextView) view.findViewById(R.id.title);
-			txtView.setText(locationString);
-			txtView.setTextAppearance(getContext(),
-					android.R.attr.textAppearanceSmall);
-
-			txtView.setClickable(true);
-			txtView.setFocusable(true);
-			txtView.setId(i);
-			if (listItemListener != null) {
-				txtView.setOnClickListener(listItemListener);
-			}
-
-			ImageView imageView = (ImageView) view.findViewById(R.id.image);
-			imageView.setImageResource(android.R.drawable.ic_delete);
-			imageView.setId(i);
-			imageView.setClickable(true);
-			if (listItemDeleteListener != null) {
-				imageView.setOnClickListener(listItemDeleteListener);
-			}
-			locationsList.addView(view);
+			createLocationItem(i, locationString);
 		}
 		locationsList.requestLayout();
+	}
+
+	protected void createLocationItem(int id, String text) {
+		View view = LayoutInflater.from(getContext()).inflate(R.layout.listitem,
+				null);
+		TextView txtView = (TextView) view.findViewById(R.id.title);
+		txtView.setText(text);
+		txtView.setTextAppearance(getContext(),
+				android.R.attr.textAppearanceSmall);
+
+		txtView.setClickable(true);
+		txtView.setFocusable(true);
+		txtView.setMaxEms(13);
+		txtView.setId(id);
+		if (listItemListener != null) {
+			txtView.setOnClickListener(listItemListener);
+		}
+
+		ImageView imageView = (ImageView) view.findViewById(R.id.image);
+		imageView.setImageResource(android.R.drawable.ic_delete);
+		imageView.setId(id);
+		imageView.setClickable(true);
+		if (listItemDeleteListener != null) {
+			imageView.setOnClickListener(listItemDeleteListener);
+		}
+		locationsList.addView(view);
 	}
 
 	public void setAddLocationListener(OnClickListener onClickListener) {

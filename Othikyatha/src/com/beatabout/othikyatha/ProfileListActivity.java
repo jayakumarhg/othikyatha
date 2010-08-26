@@ -21,6 +21,8 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
@@ -48,7 +50,7 @@ public class ProfileListActivity extends ListActivity {
 
 	public void onStart() {
 		super.onStart();
-		setListAdapter(newListAdapter());
+		reloadProfileList();
 		// Move this to code to proximityalertactivity
 		for (Profile profile : dataManager.getAllProfiles()) {
 			for (GeoAddress location : profile.getLocations()) {
@@ -57,6 +59,69 @@ public class ProfileListActivity extends ListActivity {
 			}
 		}
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.listmenu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onPreparePanel(int featureId, View view, Menu menu) {
+		MenuItem item = menu.findItem(R.id.manualMode);
+		item.setIcon(
+				dataManager.getManualMode()
+						? android.R.drawable.checkbox_on_background
+				    : android.R.drawable.checkbox_off_background);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+			case R.id.addProfile:
+				int profileId = dataManager.addProfileEntry();
+				startEditActivity(profileId);
+				return true;
+
+			case R.id.manualMode:
+				dataManager.toggleManualMode();
+				return true;
+				
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.profilelistmenu, menu);
+		menu.setHeaderTitle("Profile Actions");
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		int profileId = (int) info.targetView.getId();
+		switch (item.getItemId()) {
+			case R.id.edit:
+				startEditActivity(profileId);
+				return true;
+
+			case R.id.delete:
+				dataManager.removeProfileEntry(profileId);
+				reloadProfileList();
+				return true;
+				
+			default:
+				return true;
+		}
+	}
+	
 
 	private void createDefaultProfiles() {
 		int profileId;
@@ -68,7 +133,7 @@ public class ProfileListActivity extends ListActivity {
 		profile = dataManager.getProfile(profileId);
 		profile.setRingVolume(10);
 		profile.setName("Default");
-		location = new GeoAddress(13, 26);
+		location = new GeoAddress(-90.0, -90.0);
 		locations = new ArrayList<GeoAddress>();
 		locations.add(location);
 		profile.setLocations(locations);
@@ -92,6 +157,10 @@ public class ProfileListActivity extends ListActivity {
 		profile.setLocations(locations);
 	}
 
+	private void reloadProfileList() {
+		setListAdapter(newListAdapter());
+	}
+
 	private ListAdapter newListAdapter() {
 		Vector<Profile> vprofiles = dataManager.getAllProfiles();
 		Profile[] profiles = new Profile[vprofiles.size()];
@@ -106,64 +175,10 @@ public class ProfileListActivity extends ListActivity {
 		return adapter;
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.listmenu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onPreparePanel(int featureId, View view, Menu menu) {
-		MenuItem item = menu.findItem(R.id.manualMode);
-		item.setIcon(dataManager.getManualMode() ? android.R.drawable.checkbox_on_background
-				: android.R.drawable.checkbox_off_background);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.addProfile:
-			int profileId = dataManager.addProfileEntry();
-			Intent settingsActivity = new Intent(
-					"com.beatabout.othikyatha.EDIT_PROFILE");
-			settingsActivity.putExtra("profileId", profileId);
-			startActivity(settingsActivity);
-			return true;
-		case R.id.manualMode:
-			dataManager.toggleManualMode();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.profilelistmenu, menu);
-		menu.setHeaderTitle("Profile Options");
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		switch (item.getItemId()) {
-		case R.id.edit:
-			int profileId = (int) info.targetView.getId();
-			Intent intent = new Intent("com.beatabout.othikyatha.EDIT_PROFILE");
-			intent.putExtra("profileId", (int) profileId);
-			startActivity(intent);
-			return true;
-		case R.id.delete:
-			dataManager.removeProfileEntry((int) info.targetView.getId());
-			return true;
-		default:
-			return true;
-		}
+	private void startEditActivity(int profileId) {
+		Intent intent = new Intent("com.beatabout.othikyatha.EDIT_PROFILE");
+		intent.putExtra("profileId", profileId);
+		startActivity(intent);
 	}
 
 	private class ProfileAdapter extends ArrayAdapter<Profile> {
@@ -187,21 +202,26 @@ public class ProfileListActivity extends ListActivity {
 
 			TextView txtView = (TextView) v.findViewById(R.id.title);
 			txtView.setText(profile.getName());
-			txtView.setTextAppearance(getContext(), android.R.style.TextAppearance_Large);
+			txtView.setTextAppearance(getContext(),
+					android.R.style.TextAppearance_Large);
+			txtView.setMaxEms(9);
 			txtView.setClickable(true);
 			txtView.setId(profile.getProfileId());
 			txtView.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					if (dataManager.getManualMode()) {
 						int profileId = v.getId();
-						Intent intent = new Intent("com.beatabout.othikyatha.SWITCH_PROFILE");
+						Intent intent = new Intent(
+								"com.beatabout.othikyatha.SWITCH_PROFILE");
 						intent.putExtra("profileId", profileId);
 						v.getContext().startService(intent);
 					}
 				}
 			});
 			txtView.setFocusable(true);
-			
+			txtView.setFocusableInTouchMode(true);
+			txtView.setLongClickable(true);
+
 			ImageView imageView = (ImageView) v.findViewById(R.id.image);
 			imageView.setImageResource(android.R.drawable.ic_menu_edit);
 			imageView.setClickable(true);
@@ -209,15 +229,16 @@ public class ProfileListActivity extends ListActivity {
 			imageView.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					int profileId = v.getId();
-					Intent intent = new Intent("com.beatabout.othikyatha.EDIT_PROFILE");
-					intent.putExtra("profileId", profileId);
-					startActivity(intent);
+					startEditActivity(profileId);
 				}
 			});
 
 			v.setId(profile.getProfileId());
-			v.setFocusable(true);			
+			v.setFocusable(true);
+			v.setFocusableInTouchMode(true);
+			v.setClickable(true);
 			v.setLongClickable(true);
+			
 			return v;
 		}
 	}
