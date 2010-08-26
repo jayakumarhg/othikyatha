@@ -84,7 +84,7 @@ public class LocationsPreference extends Preference {
 
 		txtView.setClickable(true);
 		txtView.setFocusable(true);
-		txtView.setMaxEms(13);
+		txtView.setMaxEms(14);
 		txtView.setId(id);
 		if (listItemListener != null) {
 			txtView.setOnClickListener(listItemListener);

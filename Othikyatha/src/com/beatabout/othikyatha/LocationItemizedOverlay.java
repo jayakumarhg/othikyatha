@@ -29,6 +29,10 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		return overlayItems.get(i);
 	}
 
+	protected boolean hasPreviousOverlayItem() {
+		return prevOverlayItem != null;
+	}
+
 	public void setPreviousOverlayItem(double latitude, double longitude) {
 		GeoPoint point = new GeoPoint((int) (latitude * 1E6),
 				(int) (longitude * 1E6));
@@ -39,10 +43,14 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		if (prevOverlayItem != null) {
 			overlayItems.remove(prevOverlayItem);
 		}
-		
-		prevOverlayItem = new OverlayItem(point, "Old selection", "");
+
+		prevOverlayItem = new OverlayItem(point, "Previous selection", "");
 		overlayItems.add(prevOverlayItem);
 		populate();
+	}
+
+	protected boolean hasCurrentOverlayItem() {
+		return currOverlayItem != null;
 	}
 
 	protected void setCurrentOverlayItem(double longitude, double latitude) {
@@ -55,7 +63,7 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 		if (currOverlayItem != null) {
 			overlayItems.remove(currOverlayItem);
 		}
-		currOverlayItem = new OverlayItem(point, "New selection", "");
+		currOverlayItem = new OverlayItem(point, "Current selection", "");
 		overlayItems.add(currOverlayItem);
 		populate();
 	}
@@ -68,7 +76,8 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 	@Override
 	protected boolean onTap(int pIndex) {
 		if (overlayItems.get(pIndex) != null) {
-			profileLocationActivity.setSelectedGeoPoint(overlayItems.get(pIndex).getPoint());
+			profileLocationActivity.setSelectedGeoPoint(overlayItems.get(pIndex)
+					.getPoint());
 			return true;
 		}
 		return false;
@@ -81,7 +90,7 @@ public class LocationItemizedOverlay extends ItemizedOverlay<OverlayItem> {
 				GeoPoint newPoint = mapView.getProjection().fromPixels(
 						(int) event.getX(), (int) event.getY());
 				setCurrentOverlayItem(newPoint);
-			  profileLocationActivity.setSelectedGeoPoint(currOverlayItem.getPoint());
+				profileLocationActivity.setSelectedGeoPoint(currOverlayItem.getPoint());
 				return true;
 			}
 		}

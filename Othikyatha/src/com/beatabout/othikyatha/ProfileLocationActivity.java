@@ -17,11 +17,16 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 public class ProfileLocationActivity extends MapActivity {
-	private LocationItemizedOverlay itemizedOverlay;
 	private MapView mapView;
+	private LocationItemizedOverlay itemizedOverlay;
 	private MyLocationOverlay myLocationOverlay;
+	private Toast toast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,31 +52,57 @@ public class ProfileLocationActivity extends MapActivity {
 		double longitude = -90.0;
 		double latitude = -90.0;
 
-		Location location = myLocationOverlay.getLastFix();
-		if (location != null) {
-			centerLocation(location.getLatitude(), location.getLongitude());
-		}
+		centerCurrentLocation(false);
 
 		// Existing location
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			latitude = extras.getFloat("latitude", -90.0f);
-			longitude = extras.getFloat("longitude", -90.0f);
-			if (longitude != -90.0 || latitude != -90.0) {
+			latitude = extras.getFloat("latitude", 100.0f);
+			longitude = extras.getFloat("longitude", 100.0f);
+			if (longitude != 100.0 || latitude != 100.0) {
 				centerLocation(latitude, longitude);
-				itemizedOverlay.setPreviousOverlayItem(latitude, longitude);
+				itemizedOverlay.setCurrentOverlayItem(latitude, longitude);
 			}
 		}
 
 		List<Overlay> mapOverlays = mapView.getOverlays();
 		mapOverlays.add(myLocationOverlay);
 		mapOverlays.add(itemizedOverlay);
+		
+		showHelpTip(getString(R.string.mapview_tip_zooom_select_pt));
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.mapviewmenu, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.location:
+				centerCurrentLocation(true);
+				return true;
+				
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
-	private void centerLocation(double latitude, double longitude) {
-		GeoPoint point = new GeoPoint((int) (latitude * 1E6),
-				(int) (longitude * 1E6));
-		mapView.getController().setCenter(point);
+	public void setSelectedGeoPoint(GeoPoint point) {
+		mapView.getController().animateTo(point);
+		if (mapView.getZoomLevel() == mapView.getMaxZoomLevel() - 1) {
+			showHelpTip(getString(R.string.mapview_tip_select_pt));
+		} else if (mapView.getZoomLevel() <= mapView.getMaxZoomLevel() - 1) {
+			showHelpTip(getString(R.string.mapview_tip_zooom_select_pt));
+		}
+
+		boolean moreZoom = mapView.getController().zoomIn();
+		if (!moreZoom) {
+			showReverseGeoCoderMenu(point);
+		}
 	}
 
 	@Override
@@ -79,15 +110,26 @@ public class ProfileLocationActivity extends MapActivity {
 		return false;
 	}
 
-	public void setSelectedGeoPoint(GeoPoint point) {
-		mapView.getController().animateTo(point);
-		boolean more = mapView.getController().zoomIn();
-		if (!more) {
-		  showReverseGeoCoderMenu(point);
-		}
+	private void centerCurrentLocation(final boolean force) {
+		myLocationOverlay.runOnFirstFix(new Runnable() {
+			public void run() {
+				if (force || !itemizedOverlay.hasCurrentOverlayItem()) {
+					Location location = myLocationOverlay.getLastFix();
+					if (location != null) {
+						centerLocation(location.getLatitude(), location.getLongitude());
+					}
+				}
+			}
+		});
 	}
 
-	public void onSelectedPointAndAddress(GeoPoint point, CharSequence address) {
+	private void centerLocation(double latitude, double longitude) {
+		GeoPoint point = new GeoPoint((int) (latitude * 1E6),
+				(int) (longitude * 1E6));
+		mapView.getController().animateTo(point);
+	}
+
+	private void onSelectedPointAndAddress(GeoPoint point, CharSequence address) {
 		if (point == null) {
 			setResult(RESULT_CANCELED, getIntent());
 		} else {
@@ -102,23 +144,26 @@ public class ProfileLocationActivity extends MapActivity {
 	}
 
 	private void showReverseGeoCoderMenu(final GeoPoint point) {
+		double latitude = (double) point.getLatitudeE6() / 1E6;
+		double longitude = (double) point.getLongitudeE6() / 1E6;
+		
 		Geocoder geocoder = new Geocoder(getBaseContext(), Locale.getDefault());
 		final List<Address> addresses;
 		try {
-			addresses = geocoder.getFromLocation(
-					(double) point.getLatitudeE6() / 1E6,
-					(double) point.getLongitudeE6() / 1E6, 3);
+			addresses = geocoder.getFromLocation(latitude, longitude, 2);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return;
 		}
-		final CharSequence[] items = new CharSequence[addresses.size() + 1];
+		
+		final CharSequence[] items = new CharSequence[addresses.size() + 2];
 		items[0] = "--Select another location--";
-		int i = 1;
+		items[1] = convertLatLongToString(latitude, longitude);
+		int i = 2;
 		for (Address address : addresses) {
 			String addressLine = "";
 			for (int j = 0; j < address.getMaxAddressLineIndex(); ++j) {
-			  addressLine += (j == 0 ? "" : ", ") + address.getAddressLine(j); 
+				addressLine += (j == 0 ? "" : ", ") + address.getAddressLine(j);
 			}
 			items[i++] = addressLine;
 		}
@@ -135,5 +180,29 @@ public class ProfileLocationActivity extends MapActivity {
 		});
 		AlertDialog alert = builder.create();
 		alert.show();
+	}
+	
+	private void showHelpTip(String message) {
+		if (toast == null) {
+		  toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
+		} else {
+			toast.setText(message);
+		}
+		toast.show();
+	}
+	
+	private String convertLatLongToString(double latitude, double longitude) {
+		return convertLatOrLongToString(latitude) +
+		       (latitude >= 0 ? "N" : "S") + ", " +
+		       convertLatOrLongToString(longitude) +
+		       (longitude >= 0 ? "E" : "W");
+	}
+	
+	private String convertLatOrLongToString(double latorlong) {
+		latorlong = Math.abs(latorlong);
+		int degrees = (int) latorlong;
+		int minutes = (int) ((latorlong - degrees) * 60);
+		int seconds = (int) ((((latorlong - degrees) * 60) - minutes) * 60);
+		return "" + degrees + "°" + minutes + "′" + seconds + "″";
 	}
 }
