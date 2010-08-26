@@ -54,9 +54,9 @@ public class DataManager {
 
 	public void removeProfileEntry(int id) {
 		// Clears the profile data in preference file
-		manager.setSharedPreferencesName(getPreferenceName(id));
-		manager.getSharedPreferences().edit().clear();
-		manager.getSharedPreferences().edit().commit();
+		// manager.setSharedPreferencesName(getPreferenceName(id));
+		// manager.getSharedPreferences().edit().clear();
+		// manager.getSharedPreferences().edit().commit();
 
 		// Removes the profile id in the enabled preferences file
 		enabledProfilesPreferences.edit().remove(getPreferenceName(id)).commit();

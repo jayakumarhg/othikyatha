@@ -113,7 +113,7 @@ public class ProfileLocationActivity extends MapActivity {
 			return;
 		}
 		final CharSequence[] items = new CharSequence[addresses.size() + 1];
-		items[0] = "None - Select a point again";
+		items[0] = "--Select another location--";
 		int i = 1;
 		for (Address address : addresses) {
 			String addressLine = "";

@@ -19,7 +19,7 @@ public class Profile {
 	private static final String SILENT_PREF = "silentPreference";
 	private static final String VIBRATE_PREF = "vibratePreference";
 	private static final String RINGTONE_PREF = "ringtonePreference";
-	private static final String LOCATIONS_PREF = "locsPref";
+	private static final String LOCATIONS_PREF = "locationsPreference";
 	private static final String NUM_LOCATIONS_PREF = ".num";
 	private static final String LATITUDE_PREF = ".latitude@";
 	private static final String LONGITUDE_PREF = ".longitude@";
