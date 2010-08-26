@@ -9,8 +9,6 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -23,14 +21,11 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ProfileListActivity extends ListActivity {
 	private DataManager dataManager;
-	private ProximityAlertManager proximityAlertManager;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -40,26 +35,30 @@ public class ProfileListActivity extends ListActivity {
 		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
 
-		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		proximityAlertManager = new ProximityAlertManager(getApplicationContext(),
-				locationManager);
-
 		if (dataManager.hasNoProfiles()) {
 			createDefaultProfiles();
 		}
 		registerForContextMenu(getListView());
+		if (!dataManager.getManualMode()) {
+			addAllProximityAlerts();
+		}
+	}
+	
+	private void addAllProximityAlerts() {
+		Intent intent = new Intent(ProximityAlertService.PROXIMITY_ALERT_INTENT);
+		intent.putExtra(ProximityAlertService.REQUEST_TYPE, ProximityAlertService.REQUEST_ADD);
+		getApplicationContext().startService(intent);
+	}
+	
+	private void removeAllProximityAlerts() {
+		Intent intent = new Intent(ProximityAlertService.PROXIMITY_ALERT_INTENT);
+		intent.putExtra(ProximityAlertService.REQUEST_TYPE, ProximityAlertService.REQUEST_REMOVE);
+		getApplicationContext().startService(intent);
 	}
 
 	public void onStart() {
 		super.onStart();
 		reloadProfileList();
-		// Move this to code to proximityalertactivity
-		for (Profile profile : dataManager.getAllProfiles()) {
-			for (GeoAddress location : profile.getLocations()) {
-				proximityAlertManager.addProximityAlertForProfile(location,
-						profile.getProfileId());
-			}
-		}
 	}
 
 	@Override
@@ -90,6 +89,11 @@ public class ProfileListActivity extends ListActivity {
 
 			case R.id.manualMode:
 				dataManager.toggleManualMode();
+				if (dataManager.getManualMode()) {
+					removeAllProximityAlerts();
+				} else {
+					addAllProximityAlerts();
+				}
 				return true;
 				
 			default:
@@ -219,8 +223,7 @@ public class ProfileListActivity extends ListActivity {
 				public void onClick(View v) {
 					if (dataManager.getManualMode()) {
 						int profileId = v.getId();
-						Intent intent = new Intent(
-								"com.beatabout.othikyatha.SWITCH_PROFILE");
+						Intent intent = new Intent(ProfileSwitchService.PROFILE_SWITCH_INTENT);
 						intent.putExtra("profileId", profileId);
 						v.getContext().startService(intent);
 						dataManager.setActiveProfile(dataManager.getProfile(profileId));
