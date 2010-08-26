@@ -32,7 +32,8 @@ public class ProfileEditActivity extends PreferenceActivity {
 		getPreferenceManager().setSharedPreferencesName(prefName);
 		addPreferencesFromResource(R.xml.profile);
 
-		locationsPreference = (LocationsPreference) findPreference("locsPref");
+		locationsPreference = (LocationsPreference) findPreference(
+				getString(R.string.locations_pref));
 		locationsPreference.setAddLocationListener(new AddButtonListener());
 		locationsPreference.setListItemListener(new ListItemListener());
 		locationsPreference.setListItemDeleteListener(new ListItemDeleteListener());
