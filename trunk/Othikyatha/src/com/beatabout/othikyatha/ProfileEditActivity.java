@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.view.View;
@@ -18,14 +17,8 @@ public class ProfileEditActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.profile);
 
 		dataManager = new DataManager(new ContextWrapper(getApplicationContext()));
-
-		locationsPreference = (LocationsPreference) findPreference("locsPref");
-		locationsPreference.setAddLocationListener(new AddButtonListener());
-		locationsPreference.setListItemListener(new ListItemListener());
-		locationsPreference.setListItemDeleteListener(new ListItemDeleteListener());
 	}
 
 	@Override
@@ -37,6 +30,12 @@ public class ProfileEditActivity extends PreferenceActivity {
 
 		String prefName = DataManager.getPreferenceName(profileId);
 		getPreferenceManager().setSharedPreferencesName(prefName);
+		addPreferencesFromResource(R.xml.profile);
+
+		locationsPreference = (LocationsPreference) findPreference("locsPref");
+		locationsPreference.setAddLocationListener(new AddButtonListener());
+		locationsPreference.setListItemListener(new ListItemListener());
+		locationsPreference.setListItemDeleteListener(new ListItemDeleteListener());
 		setResult(RESULT_OK, getIntent());
 	}
 
