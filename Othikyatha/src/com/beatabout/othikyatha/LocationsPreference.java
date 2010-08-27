@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.opengl.Visibility;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -19,9 +20,11 @@ public class LocationsPreference extends Preference {
 	private Button addButton;
 	private LinearLayout locationsList;
 	private TextView textView;
+	private TextView summaryView;
 	private OnClickListener addButtonListener;
 	private OnClickListener listItemListener;
 	private OnClickListener listItemDeleteListener;
+	private boolean enabled = true;
 
 	public LocationsPreference(Context context) {
 		super(context);
@@ -44,9 +47,19 @@ public class LocationsPreference extends Preference {
 
 		textView = (TextView) view.findViewById(R.id.title);
 		textView.setText(getTitle());
+		
+		summaryView = (TextView) view.findViewById(R.id.summary);
+		summaryView.setText(enabled
+				? "This profile will be active in locations registered above"
+				: "This profile will be active in locations that haven\'t been " + 
+				  "registered in any other profile");
+		
 		addButton = (Button) view.findViewById(R.id.addlocation);
 		if (addButtonListener != null) {
 			addButton.setOnClickListener(addButtonListener);
+		}
+		if (!enabled) {
+			addButton.setVisibility(View.GONE);
 		}
 
 		locationsList = (LinearLayout) view.findViewById(R.id.locationlist);
@@ -110,5 +123,9 @@ public class LocationsPreference extends Preference {
 
 	public void setListItemDeleteListener(OnClickListener onClickListener) {
 		listItemDeleteListener = onClickListener;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 }
