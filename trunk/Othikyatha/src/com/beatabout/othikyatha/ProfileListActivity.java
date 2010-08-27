@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ProfileListActivity extends ListActivity {
@@ -108,8 +109,9 @@ public class ProfileListActivity extends ListActivity {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.profilelistmenu, menu);
 		menu.setHeaderTitle("Profile Actions");
+		this.onPrepareOptionsMenu(menu);
 	}
-
+	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
@@ -120,12 +122,21 @@ public class ProfileListActivity extends ListActivity {
 				return true;
 
 			case R.id.delete:
-				dataManager.removeProfileEntry(profileId);
-				reloadProfileList();
+				deleteProfile(profileId);
 				return true;
 				
 			default:
 				return true;
+		}
+	}
+
+	private void deleteProfile(int profileId) {
+		if (profileId != dataManager.getDefaultProfileId()) {
+		  dataManager.removeProfileEntry(profileId);
+		  reloadProfileList();
+		} else {
+			Toast.makeText(getApplicationContext(),
+					getString(R.string.default_no_delete), Toast.LENGTH_SHORT).show();
 		}
 	}
 

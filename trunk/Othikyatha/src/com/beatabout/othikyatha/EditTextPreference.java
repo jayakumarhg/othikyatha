@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class EditTextPreference extends Preference implements TextWatcher {
+	private EditText name;
+	private boolean enabled = true;
+
 	public EditTextPreference(Context context) {
 		super(context);
 	}
@@ -26,8 +29,9 @@ public class EditTextPreference extends Preference implements TextWatcher {
 	@Override
 	protected void onBindView(View view) {
 		super.onBindView(view);
-		EditText name = (EditText) view.findViewById(R.id.name);
+		name = (EditText) view.findViewById(R.id.name);
 		name.setText(getPersistedString("Default"));
+		name.setEnabled(enabled);
 		name.addTextChangedListener(this);
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setText(getTitle());
@@ -44,4 +48,8 @@ public class EditTextPreference extends Preference implements TextWatcher {
 		editor.putString(getKey(), s.toString());
 		editor.commit();
 	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+  }
 }

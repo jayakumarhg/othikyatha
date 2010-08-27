@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 
 public class ProfileEditActivity extends PreferenceActivity {
 	DataManager dataManager;
+	private EditTextPreference editTextPreference;
 	private LocationsPreference locationsPreference;
 	private int profileId;
 
@@ -32,8 +33,16 @@ public class ProfileEditActivity extends PreferenceActivity {
 		getPreferenceManager().setSharedPreferencesName(prefName);
 		addPreferencesFromResource(R.xml.profile);
 
+		editTextPreference = (EditTextPreference) findPreference(
+				getString(R.string.name_pref));
 		locationsPreference = (LocationsPreference) findPreference(
 				getString(R.string.locations_pref));
+		
+		if (profileId == dataManager.getDefaultProfileId()) {
+			editTextPreference.setEnabled(false);
+			locationsPreference.setEnabled(false);
+		}
+		
 		locationsPreference.setAddLocationListener(new AddButtonListener());
 		locationsPreference.setListItemListener(new ListItemListener());
 		locationsPreference.setListItemDeleteListener(new ListItemDeleteListener());

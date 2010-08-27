@@ -14,4 +14,5 @@
 	<string name="locations_pref">locationsPreference</string>
 	<string name="mapview_tip_zooom_select_pt">Tap to zoom and select a point</string>
 	<string name="mapview_tip_select_pt">Tap to select a point</string>
+	<string name="default_no_delete">Default profile cannot be deleted</string>
 </resources>
