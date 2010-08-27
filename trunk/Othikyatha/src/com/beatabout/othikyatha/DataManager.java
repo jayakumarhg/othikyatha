@@ -1,5 +1,9 @@
 package com.beatabout.othikyatha;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 
 import android.content.Context;
@@ -7,47 +11,58 @@ import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 
 public class DataManager {
-	public static final String globalPreferencesFile = "globalPrefsFile";
-	public static final String enabledProfilesFile = "enabledProfilesFile";
-	public static final String activeProfileFile = "activeProfileFile";
-	public static final String nextId = "nextId";
-	public static final String manualMode = "manualMode";
-	
+	// The global preferences file stores following information:
+	// 1.next available id
+	// 2.active profile id
+	// 3.default profile id
+	// 4.manual mode settings.
+	public static final String GLOBAL_PREFERENCES_FILE = "globalPrefsFile";
+	// Enabled profiles preference file stores all ids of profiles that were
+	// created
+	// and not deleted. It stores them as profilePrefName -> profileId map.
+	public static final String ENABLED_PROFILES_FILE = "enabledProfilesFile";
+
+	public static final String NEXT_ID_KEY = "nextId";
+	public static final String MANUAL_MODE_KEY = "manualMode";
+	public static final String ACTIVE_PROFILE_KEY = "activeProfileId";
+	public static final String DEFAULT_PROFILE_KEY = "defaultProfileId";
+
 	private ContextWrapper contextWrapper;
-	private SharedPreferences profileIdPreferences;
+	private SharedPreferences globalPreferences;
 	private SharedPreferences enabledProfilesPreferences;
-	private SharedPreferences activeProfilePreferences;
 
 	public DataManager(ContextWrapper contextWrapper) {
 		this.contextWrapper = contextWrapper;
-		profileIdPreferences = contextWrapper.getSharedPreferences(
-				globalPreferencesFile, Context.MODE_WORLD_READABLE);
+		globalPreferences = contextWrapper.getSharedPreferences(
+				GLOBAL_PREFERENCES_FILE, Context.MODE_WORLD_READABLE);
 		enabledProfilesPreferences = contextWrapper.getSharedPreferences(
-				enabledProfilesFile, Context.MODE_WORLD_READABLE);
-		activeProfilePreferences = contextWrapper.getSharedPreferences(
-				activeProfileFile, Context.MODE_WORLD_READABLE);
+				ENABLED_PROFILES_FILE, Context.MODE_WORLD_READABLE);
 	}
 
 	public synchronized int getNextId() {
-		int next = profileIdPreferences.getInt(nextId, 0);
-		profileIdPreferences.edit().putInt(nextId, next + 1).commit();
+		int next = globalPreferences.getInt(NEXT_ID_KEY, 0);
+		globalPreferences.edit().putInt(NEXT_ID_KEY, next + 1).commit();
 		return next;
 	}
 
 	public synchronized boolean getManualMode() {
-		return profileIdPreferences.getBoolean(manualMode, false);
+		return globalPreferences.getBoolean(MANUAL_MODE_KEY, false);
 	}
 
 	public synchronized void setManualMode(boolean mode) {
-		profileIdPreferences.edit().putBoolean(manualMode, mode).commit();
+		globalPreferences.edit().putBoolean(MANUAL_MODE_KEY, mode).commit();
 	}
 
 	public synchronized void toggleManualMode() {
 		setManualMode(!getManualMode());
 	}
 
-	public static String getPreferenceName(int id) {
-		return "profile:id-" + Integer.toString(id);
+	/**
+	 * Preference file name for a given profileId where that profiles data is
+	 * stored.
+	 */
+	public static String getPreferenceNameForProfile(int profileId) {
+		return "profile:id-" + Integer.toString(profileId);
 	}
 
 	public void removeProfileEntry(int id) {
@@ -57,11 +72,13 @@ public class DataManager {
 		// manager.getSharedPreferences().edit().commit();
 
 		// Removes the profile id in the enabled preferences file
-		enabledProfilesPreferences.edit().remove(getPreferenceName(id)).commit();
+		enabledProfilesPreferences.edit().remove(getPreferenceNameForProfile(id))
+				.commit();
 	}
 
 	public void addProfileEntry(int id) {
-		enabledProfilesPreferences.edit().putInt(getPreferenceName(id), id).commit();
+		enabledProfilesPreferences.edit()
+				.putInt(getPreferenceNameForProfile(id), id).commit();
 	}
 
 	public int addProfileEntry() {
@@ -72,34 +89,67 @@ public class DataManager {
 
 	public Profile getProfile(int profileId) {
 		SharedPreferences sharedPref = contextWrapper.getSharedPreferences(
-				getPreferenceName(profileId), Context.MODE_WORLD_READABLE);
+				getPreferenceNameForProfile(profileId), Context.MODE_WORLD_READABLE);
 		return new Profile(profileId, sharedPref);
 	}
 
-	public Vector<Profile> getAllProfiles() {
-		Vector<Profile> list = new Vector<Profile>();
+	public List<Profile> getAllProfiles() {
+		List<Profile> list = new ArrayList<Profile>();
 		for (Object value : enabledProfilesPreferences.getAll().values()) {
 			int profileId = (Integer) value;
 			list.add(getProfile(profileId));
 		}
+		Collections.sort(list, new Comparator<Profile>() {
+			public int compare(Profile object1, Profile object2) {
+				if (object1.getProfileId() == getDefaultProfileId()) {
+					return -1;
+				} else if (object2.getProfileId() == getDefaultProfileId()) {
+					return 1;
+				} else {
+					return object1.getName().compareToIgnoreCase(object2.getName()); 
+				}
+			}
+		});
 		return list;
 	}
 
 	public boolean hasNoProfiles() {
 		return enabledProfilesPreferences.getAll().isEmpty();
 	}
-	
+
 	public void setActiveProfile(Profile profile) {
-		activeProfilePreferences.edit().putInt("activeProfileId", profile.getProfileId()).commit();
+		setActiveProfileId(profile.getProfileId());
 	}
-	
+
+	public void setActiveProfileId(int profileId) {
+		globalPreferences.edit().putInt(ACTIVE_PROFILE_KEY, profileId).commit();
+	}
+
 	public Profile getActiveProfile() {
-		int profileId = activeProfilePreferences.getInt("activeProfileId", -1);
+		int profileId = globalPreferences.getInt(ACTIVE_PROFILE_KEY, -1);
 		return getProfile(profileId);
 	}
-	
+
 	public int getActiveProfileId() {
-		int profileId = activeProfilePreferences.getInt("activeProfileId", -1);
+		int profileId = globalPreferences.getInt(ACTIVE_PROFILE_KEY, -1);
+		return profileId;
+	}
+
+	public void setDefaultProfile(Profile profile) {
+		setDefaultProfileId(profile.getProfileId());
+	}
+
+	public void setDefaultProfileId(int profileId) {
+		globalPreferences.edit().putInt(DEFAULT_PROFILE_KEY, profileId).commit();
+	}
+
+	public Profile getDefaultProfile() {
+		int profileId = globalPreferences.getInt(DEFAULT_PROFILE_KEY, -1);
+		return getProfile(profileId);
+	}
+
+	public int getDefaultProfileId() {
+		int profileId = globalPreferences.getInt(DEFAULT_PROFILE_KEY, -1);
 		return profileId;
 	}
 }
