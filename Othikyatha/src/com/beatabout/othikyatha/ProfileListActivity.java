@@ -1,6 +1,6 @@
 package com.beatabout.othikyatha;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import android.app.ListActivity;
@@ -9,6 +9,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -127,41 +128,35 @@ public class ProfileListActivity extends ListActivity {
 				return true;
 		}
 	}
-	
 
 	private void createDefaultProfiles() {
 		int profileId;
 		Profile profile;
-		GeoAddress location;
-		ArrayList<GeoAddress> locations;
+		
+		AudioManager audioManager =
+			  (AudioManager) getSystemService(AUDIO_SERVICE);
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
-		profile.setRingVolume(10);
 		profile.setName("Default");
-		location = new GeoAddress(-90.0, -90.0);
-		locations = new ArrayList<GeoAddress>();
-		locations.add(location);
-		profile.setLocations(locations);
+		ProfileManager.readCurrentProfile(profile, audioManager);
 		dataManager.setActiveProfile(profile);
+		dataManager.setDefaultProfile(profile);
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
-		profile.setRingVolume(40);
+		ProfileManager.readCurrentProfile(profile, audioManager);
+		profile.setVibrate(false);
+		profile.setMediaVolume(Math.min(100, 2 * profile.getMediaVolume()));
 		profile.setName("Home");
-		location = new GeoAddress(42, 41);
-		locations = new ArrayList<GeoAddress>();
-		locations.add(location);
-		profile.setLocations(locations);
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
-		profile.setRingVolume(80);
+		ProfileManager.readCurrentProfile(profile, audioManager);
+		profile.setVibrate(true);
+		profile.setMediaVolume(profile.getMediaVolume() / 2);
+		profile.setRingVolume(profile.getRingVolume() / 2);
 		profile.setName("Work");
-		location = new GeoAddress(80, 81);
-		locations = new ArrayList<GeoAddress>();
-		locations.add(location);
-		profile.setLocations(locations);
 	}
 
 	private void reloadProfileList() {
@@ -169,7 +164,7 @@ public class ProfileListActivity extends ListActivity {
 	}
 
 	private ListAdapter newListAdapter() {
-		Vector<Profile> vprofiles = dataManager.getAllProfiles();
+		List<Profile> vprofiles = dataManager.getAllProfiles();
 		Profile[] profiles = new Profile[vprofiles.size()];
 
 		int i = 0;
@@ -189,13 +184,13 @@ public class ProfileListActivity extends ListActivity {
 	}
 
 	private class ProfileAdapter extends ArrayAdapter<Profile> {
-		private Vector<Profile> profiles;
+		private List<Profile> profiles;
 		private LayoutInflater inflater;
 
 		public ProfileAdapter(Context context, int textViewResourceId,
-				Vector<Profile> profiles) {
-			super(context, textViewResourceId, profiles);
-			this.profiles = profiles;
+				List<Profile> vprofiles) {
+			super(context, textViewResourceId, vprofiles);
+			this.profiles = vprofiles;
 			this.inflater = LayoutInflater.from(context);
 		}
 

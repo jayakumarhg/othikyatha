@@ -28,7 +28,7 @@ public class ProfileEditActivity extends PreferenceActivity {
 		Bundle extras = getIntent().getExtras();
 		profileId = extras.getInt("profileId");
 
-		String prefName = DataManager.getPreferenceName(profileId);
+		String prefName = DataManager.getPreferenceNameForProfile(profileId);
 		getPreferenceManager().setSharedPreferencesName(prefName);
 		addPreferencesFromResource(R.xml.profile);
 
