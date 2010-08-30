@@ -203,6 +203,7 @@ public class ProfileLocationActivity extends MapActivity {
 		int degrees = (int) latorlong;
 		int minutes = (int) ((latorlong - degrees) * 60);
 		int seconds = (int) ((((latorlong - degrees) * 60) - minutes) * 60);
+		// Example: 12°58′0″N 77°34′0″E
 		return "" + degrees + "°" + minutes + "′" + seconds + "″";
 	}
 }
