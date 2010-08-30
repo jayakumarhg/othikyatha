@@ -13,10 +13,6 @@
            android:key="@string/ring_volume_pref"
            android:title="Ringer Volume"
            android:layout="@+layout/seekbarpreference" />
-      <com.beatabout.othikyatha.SeekbarPreference 
-           android:key="@string/voice_volume_pref"
-           android:title="Voice Volume"
-           android:layout="@+layout/seekbarpreference" />
       <CheckBoxPreference 
            android:key="@string/silent_pref"
            android:title="Silent" />
@@ -24,9 +20,14 @@
            android:key="@string/vibrate_pref"
            android:title="Vibrate" />
       <com.beatabout.othikyatha.SeekbarPreference 
+           android:key="@string/voice_volume_pref"
+           android:title="Voice Volume"
+           android:layout="@+layout/seekbarpreference" />
+      <com.beatabout.othikyatha.SeekbarPreference 
            android:key="@string/media_volume_pref"
            android:title="Media Volume"
            android:layout="@+layout/seekbarpreference" />
+      <!--  Re-enable once ringtone preferences work
       <RingtonePreference
            android:name="Ringtone Preference"
            android:summary="Select a ringtone"
@@ -34,4 +35,5 @@
            android:ringtoneType="ringtone"
            android:showSilent="false"
            android:key="@string/ringtone_pref" />
+      -->
 </PreferenceScreen>
