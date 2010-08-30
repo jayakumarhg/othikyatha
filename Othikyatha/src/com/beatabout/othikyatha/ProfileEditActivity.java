@@ -20,11 +20,6 @@ public class ProfileEditActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 
 		dataManager = new DataManager(new ContextWrapper(getApplicationContext()));
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
 
 		Bundle extras = getIntent().getExtras();
 		profileId = extras.getInt("profileId");
