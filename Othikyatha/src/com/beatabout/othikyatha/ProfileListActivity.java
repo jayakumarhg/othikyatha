@@ -212,23 +212,13 @@ public class ProfileListActivity extends ListActivity {
 				v = inflater.inflate(R.layout.listitem, null);
 			}
 			Profile profile = profiles.get(position);
+			final int profileId = profile.getProfileId();
 
-			TextView txtView = (TextView) v.findViewById(R.id.title);
-			txtView.setText(profile.getName());
-			txtView.setTextAppearance(getContext(),
-					android.R.style.TextAppearance_Large);
-			if (profile.getProfileId() == dataManager.getActiveProfileId()) {
-				txtView.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-				txtView.setTextColor(Color.WHITE);
-			} else {
-				txtView.setTextColor(Color.LTGRAY);
-			}
-			txtView.setMaxEms(9);
-			txtView.setId(profile.getProfileId());
+			v.setId(profileId);
+			v.setLongClickable(true);
 			v.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					if (dataManager.getManualMode()) {
-						int profileId = v.getId();
 						Intent intent = new Intent(ProfileSwitchService.PROFILE_SWITCH_INTENT);
 						intent.putExtra("profileId", profileId);
 						v.getContext().startService(intent);
@@ -238,20 +228,26 @@ public class ProfileListActivity extends ListActivity {
 				}
 			});
 
+			TextView txtView = (TextView) v.findViewById(R.id.title);
+			txtView.setText(profile.getName());
+			txtView.setMaxEms(9);
+			txtView.setTextAppearance(getContext(),
+					android.R.style.TextAppearance_Large);
+			if (profile.getProfileId() == dataManager.getActiveProfileId()) {
+				txtView.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+				txtView.setTextColor(Color.WHITE);
+			} else {
+				txtView.setTextColor(Color.LTGRAY);
+			}
+
 			ImageView imageView = (ImageView) v.findViewById(R.id.image);
 			imageView.setImageResource(android.R.drawable.ic_menu_edit);
 			imageView.setClickable(true);
-			imageView.setId(profile.getProfileId());
 			imageView.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
-					int profileId = v.getId();
 					startEditActivity(profileId);
 				}
 			});
-
-			v.setId(profile.getProfileId());
-			v.setClickable(true);
-			v.setLongClickable(true);
 			
 			return v;
 		}
