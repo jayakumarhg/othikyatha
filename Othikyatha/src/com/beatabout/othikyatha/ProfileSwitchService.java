@@ -53,22 +53,24 @@ public class ProfileSwitchService extends IntentService {
 		if (!entering) {
 			profileId = dataManager.getDefaultProfileId();
 		}
-
-		int icon = R.drawable.icon;
 		Profile profile = dataManager.getProfile(profileId);
-		CharSequence tickerText = "Profile changed to " + profile.getName();
-		Notification notification = new Notification(icon, tickerText,
-				System.currentTimeMillis() + 5000);
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		Intent notificationIntent = new Intent(this, ProfileListActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(
-				getApplicationContext(), 0, notificationIntent, 0);
-		notification.setLatestEventInfo(getApplicationContext(), "Profile changed",
-				tickerText, contentIntent);
-		notificationManager.notify(PROFILE_SWITCH_NOTIFY_ID + profileId,
-				notification);
-
 		ProfileManager.applyProfile(profile, audioManager, getContentResolver());
-		dataManager.setActiveProfile(profile);
+
+		// Notify only if we are really changing from the active profile.
+		if (profileId != dataManager.getActiveProfileId()) {
+			int icon = R.drawable.icon;
+			CharSequence tickerText = "Profile changed to " + profile.getName();
+			Notification notification = new Notification(icon, tickerText,
+					System.currentTimeMillis() + 5000);
+			notification.flags |= Notification.FLAG_AUTO_CANCEL;
+			Intent notificationIntent = new Intent(this, ProfileListActivity.class);
+			PendingIntent contentIntent = PendingIntent.getActivity(
+					getApplicationContext(), 0, notificationIntent, 0);
+			notification.setLatestEventInfo(getApplicationContext(),
+					"Profile changed", tickerText, contentIntent);
+			notificationManager.notify(PROFILE_SWITCH_NOTIFY_ID + profileId,
+					notification);
+			dataManager.setActiveProfile(profile);
+		}
 	}
 }

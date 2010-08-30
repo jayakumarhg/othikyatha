@@ -14,8 +14,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 public class ProximityAlertService extends IntentService {
-	public static final int PROXIMITY_RADIUS_IN_METERS = 30;
 	public static final int PROXIMITY_EXPIRATION = -1;
+	public static final int PROXIMITY_RADIUS_IN_METERS = 42;
+
 	public static final String PROFILE_ID = "profileId";
 	public static final String PROXIMITY_ALERT_INTENT = "com.beatabout.othikyatha.PROXIMITY_ALERT";
 	
