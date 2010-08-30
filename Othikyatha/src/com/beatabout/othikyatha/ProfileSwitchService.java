@@ -56,7 +56,7 @@ public class ProfileSwitchService extends IntentService {
 
 		int icon = R.drawable.icon;
 		Profile profile = dataManager.getProfile(profileId);
-		CharSequence tickerText = "Profile changed to" + profile.getName();
+		CharSequence tickerText = "Profile changed to " + profile.getName();
 		Notification notification = new Notification(icon, tickerText,
 				System.currentTimeMillis() + 5000);
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
