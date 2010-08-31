@@ -21,6 +21,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -32,7 +33,7 @@ public class ProfileListActivity extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+	  
 		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
 
@@ -174,13 +175,6 @@ public class ProfileListActivity extends ListActivity {
 
 	private ListAdapter newListAdapter() {
 		List<Profile> vprofiles = dataManager.getAllProfiles();
-		Profile[] profiles = new Profile[vprofiles.size()];
-
-		int i = 0;
-		for (Profile profile : vprofiles) {
-			profiles[i++] = profile;
-		}
-
 		ProfileAdapter adapter = new ProfileAdapter(this,
 				android.R.layout.simple_list_item_single_choice, vprofiles);
 		return adapter;
@@ -190,6 +184,21 @@ public class ProfileListActivity extends ListActivity {
 		Intent intent = new Intent("com.beatabout.othikyatha.EDIT_PROFILE");
 		intent.putExtra("profileId", profileId);
 		startActivity(intent);
+	}
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		int profileId = v.getId();
+		if (dataManager.getManualMode()) {
+			Intent intent = new Intent(
+					BackgroundService.BACKGROUND_SERVICE_INTENT);
+			intent.putExtra(BackgroundService.REQUEST_TYPE,
+					BackgroundService.REQUEST_SWITCH);
+			intent.putExtra("profileId", profileId);
+			v.getContext().startService(intent);
+			dataManager.setActiveProfile(dataManager.getProfile(profileId));
+			reloadProfileList();
+		}
 	}
 
 	private class ProfileAdapter extends ArrayAdapter<Profile> {
@@ -213,21 +222,6 @@ public class ProfileListActivity extends ListActivity {
 			final int profileId = profile.getProfileId();
 
 			v.setId(profileId);
-			v.setLongClickable(true);
-			v.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View v) {
-					if (dataManager.getManualMode()) {
-						Intent intent = new Intent(
-								BackgroundService.BACKGROUND_SERVICE_INTENT);
-						intent.putExtra(BackgroundService.REQUEST_TYPE,
-								BackgroundService.REQUEST_SWITCH);
-						intent.putExtra("profileId", profileId);
-						v.getContext().startService(intent);
-						dataManager.setActiveProfile(dataManager.getProfile(profileId));
-						reloadProfileList();
-					}
-				}
-			});
 
 			TextView txtView = (TextView) v.findViewById(R.id.title);
 			txtView.setText(profile.getName());
