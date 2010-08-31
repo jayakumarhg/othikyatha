@@ -12,9 +12,16 @@
             </intent-filter>
         </activity>
 
-		<service android:name="BackgroundService" android:enabled="true" android:label="@string/app_name">
+		<service android:name="ProfileSwitchService" android:enabled="true" android:label="@string/app_name">
 			<intent-filter>
-				<action android:name="com.beatabout.othikyatha.BACKGROUND_SERVICE" />
+				<action android:name="com.beatabout.othikyatha.SWITCH_PROFILE" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</service>
+		
+		<service android:name="ProximityAlertService" android:enabled="true" android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="com.beatabout.othikyatha.PROXIMITY_ALERT" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</service>
