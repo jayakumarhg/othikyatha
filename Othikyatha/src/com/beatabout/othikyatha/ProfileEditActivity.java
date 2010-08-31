@@ -107,9 +107,9 @@ public class ProfileEditActivity extends PreferenceActivity {
 	}
 
 	private void updateProximityAlerts() {
-		Intent intent = new Intent(ProximityAlertService.PROXIMITY_ALERT_INTENT);
-		intent.putExtra(ProximityAlertService.REQUEST_TYPE,
-				ProximityAlertService.REQUEST_UPDATE);
+		Intent intent = new Intent(BackgroundService.BACKGROUND_SERVICE_INTENT);
+		intent.putExtra(BackgroundService.REQUEST_TYPE,
+				BackgroundService.REQUEST_UPDATE);
 		getApplicationContext().startService(intent);
 	}
 }
