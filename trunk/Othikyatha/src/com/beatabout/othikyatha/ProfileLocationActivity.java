@@ -117,6 +117,7 @@ public class ProfileLocationActivity extends MapActivity {
 					Location location = myLocationOverlay.getLastFix();
 					if (location != null) {
 						centerLocation(location.getLatitude(), location.getLongitude());
+						mapView.getController().setZoom(mapView.getMaxZoomLevel() - 1);
 					}
 				}
 			}
