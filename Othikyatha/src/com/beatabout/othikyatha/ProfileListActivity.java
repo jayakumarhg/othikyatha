@@ -44,16 +44,16 @@ public class ProfileListActivity extends ListActivity {
 	}
 
 	private void addAllProximityAlerts() {
-		Intent intent = new Intent(ProximityAlertService.PROXIMITY_ALERT_INTENT);
-		intent.putExtra(ProximityAlertService.REQUEST_TYPE,
-				ProximityAlertService.REQUEST_ADD);
+		Intent intent = new Intent(BackgroundService.BACKGROUND_SERVICE_INTENT);
+		intent.putExtra(BackgroundService.REQUEST_TYPE,
+				BackgroundService.REQUEST_ADD);
 		getApplicationContext().startService(intent);
 	}
 
 	private void removeAllProximityAlerts() {
-		Intent intent = new Intent(ProximityAlertService.PROXIMITY_ALERT_INTENT);
-		intent.putExtra(ProximityAlertService.REQUEST_TYPE,
-				ProximityAlertService.REQUEST_REMOVE);
+		Intent intent = new Intent(BackgroundService.BACKGROUND_SERVICE_INTENT);
+		intent.putExtra(BackgroundService.REQUEST_TYPE,
+				BackgroundService.REQUEST_REMOVE);
 		getApplicationContext().startService(intent);
 	}
 
@@ -218,7 +218,9 @@ public class ProfileListActivity extends ListActivity {
 				public void onClick(View v) {
 					if (dataManager.getManualMode()) {
 						Intent intent = new Intent(
-								ProfileSwitchService.PROFILE_SWITCH_INTENT);
+								BackgroundService.BACKGROUND_SERVICE_INTENT);
+						intent.putExtra(BackgroundService.REQUEST_TYPE,
+								BackgroundService.REQUEST_SWITCH);
 						intent.putExtra("profileId", profileId);
 						v.getContext().startService(intent);
 						dataManager.setActiveProfile(dataManager.getProfile(profileId));
