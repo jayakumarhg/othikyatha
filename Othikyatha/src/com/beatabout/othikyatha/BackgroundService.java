@@ -141,7 +141,7 @@ public class BackgroundService extends IntentService {
 		ProfileManager.applyProfile(profile, audioManager, getContentResolver());
 
 		// Notify only if we are really changing from the active profile.
-		//if (profileId != dataManager.getActiveProfileId()) {
+		if (profileId != dataManager.getActiveProfileId()) {
 			int icon = R.drawable.notify_icon;
 			CharSequence tickerText = "Profile changed to " + profile.getName();
 			Notification notification = new Notification(icon, tickerText,
@@ -155,6 +155,6 @@ public class BackgroundService extends IntentService {
 			notificationManager.notify(PROFILE_SWITCH_NOTIFY_ID + profileId,
 					notification);
 			dataManager.setActiveProfile(profile);
-		//}
+		}
 	}
 }
