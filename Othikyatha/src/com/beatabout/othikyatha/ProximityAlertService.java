@@ -19,7 +19,7 @@ public class ProximityAlertService extends IntentService {
 
 	public static final String PROFILE_ID = "profileId";
 	public static final String PROXIMITY_ALERT_INTENT = "com.beatabout.othikyatha.PROXIMITY_ALERT";
-	
+
 	public static final String REQUEST_TYPE = "requestType";
 	public static final int REQUEST_ADD = 1;
 	public static final int REQUEST_REMOVE = 2;
@@ -34,20 +34,21 @@ public class ProximityAlertService extends IntentService {
 	public ProximityAlertService() {
 		super("Proximity Alert");
 	}
-	
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-    	onHandleIntent(intent);
-        return START_STICKY;
-    }
-	
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		onHandleIntent(intent);
+		return START_STICKY;
+	}
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-		pendingIntentsMap = Collections.synchronizedMap(new HashMap<String, PendingIntent>());
+		pendingIntentsMap = Collections
+				.synchronizedMap(new HashMap<String, PendingIntent>());
 		requestCode = new AtomicInteger(0);
 	}
 
@@ -67,8 +68,12 @@ public class ProximityAlertService extends IntentService {
 		}
 		pendingIntentsMap.clear();
 	}
-	
+
 	private void addAllProximityAlerts() {
+		if (dataManager.getManualMode()) {
+			return;
+		}
+
 		for (Profile profile : dataManager.getAllProfiles()) {
 			for (GeoAddress location : profile.getLocations()) {
 				addProximityAlertForProfile(location, profile.getProfileId());
@@ -80,8 +85,9 @@ public class ProximityAlertService extends IntentService {
 		Intent intent = new Intent(ProfileSwitchService.PROFILE_SWITCH_INTENT);
 		intent.putExtra(PROFILE_ID, profileId);
 
-		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(),
-				requestCode.get(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getService(
+				getApplicationContext(), requestCode.get(), intent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 		return pendingIntent;
 	}
 

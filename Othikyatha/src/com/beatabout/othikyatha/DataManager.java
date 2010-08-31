@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Vector;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -106,7 +105,7 @@ public class DataManager {
 				} else if (object2.getProfileId() == getDefaultProfileId()) {
 					return 1;
 				} else {
-					return object1.getName().compareToIgnoreCase(object2.getName()); 
+					return object1.getName().compareToIgnoreCase(object2.getName());
 				}
 			}
 		});

@@ -28,16 +28,14 @@ public class ProfileEditActivity extends PreferenceActivity {
 		getPreferenceManager().setSharedPreferencesName(prefName);
 		addPreferencesFromResource(R.xml.profile);
 
-		editTextPreference = (EditTextPreference) findPreference(
-				getString(R.string.name_pref));
-		locationsPreference = (LocationsPreference) findPreference(
-				getString(R.string.locations_pref));
-		
+		editTextPreference = (EditTextPreference) findPreference(getString(R.string.name_pref));
+		locationsPreference = (LocationsPreference) findPreference(getString(R.string.locations_pref));
+
 		if (profileId == dataManager.getDefaultProfileId()) {
 			editTextPreference.setEnabled(false);
 			locationsPreference.setEnabled(false);
 		}
-		
+
 		locationsPreference.setAddLocationListener(new AddButtonListener());
 		locationsPreference.setListItemListener(new ListItemListener());
 		locationsPreference.setListItemDeleteListener(new ListItemDeleteListener());
@@ -73,6 +71,7 @@ public class ProfileEditActivity extends PreferenceActivity {
 			List<GeoAddress> locations = profile.getLocations();
 			locations.remove(index);
 			profile.setLocations(locations);
+			updateProximityAlerts();
 			ProfileEditActivity.this.locationsPreference.populateLocations();
 		}
 	}
@@ -101,8 +100,16 @@ public class ProfileEditActivity extends PreferenceActivity {
 				newLocation.setAddress(address);
 				profile.setLocations(locations);
 
+				updateProximityAlerts();
 				locationsPreference.populateLocations();
 			}
 		}
+	}
+
+	private void updateProximityAlerts() {
+		Intent intent = new Intent(ProximityAlertService.PROXIMITY_ALERT_INTENT);
+		intent.putExtra(ProximityAlertService.REQUEST_TYPE,
+				ProximityAlertService.REQUEST_UPDATE);
+		getApplicationContext().startService(intent);
 	}
 }
