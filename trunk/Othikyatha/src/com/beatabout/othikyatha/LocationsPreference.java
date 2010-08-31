@@ -49,7 +49,7 @@ public class LocationsPreference extends Preference {
 
 		summaryView = (TextView) view.findViewById(R.id.summary);
 		summaryView
-				.setText(enabled ? "This profile will be active in locations registered above"
+				.setText(enabled ? "This profile will be active in above locations"
 						: "This profile will be active in locations that haven\'t been "
 								+ "registered in any other profile");
 
