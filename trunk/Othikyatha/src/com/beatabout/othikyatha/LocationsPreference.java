@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.opengl.Visibility;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -47,13 +46,13 @@ public class LocationsPreference extends Preference {
 
 		textView = (TextView) view.findViewById(R.id.title);
 		textView.setText(getTitle());
-		
+
 		summaryView = (TextView) view.findViewById(R.id.summary);
-		summaryView.setText(enabled
-				? "This profile will be active in locations registered above"
-				: "This profile will be active in locations that haven\'t been " + 
-				  "registered in any other profile");
-		
+		summaryView
+				.setText(enabled ? "This profile will be active in locations registered above"
+						: "This profile will be active in locations that haven\'t been "
+								+ "registered in any other profile");
+
 		addButton = (Button) view.findViewById(R.id.addlocation);
 		if (addButtonListener != null) {
 			addButton.setOnClickListener(addButtonListener);
@@ -92,8 +91,7 @@ public class LocationsPreference extends Preference {
 				null);
 		TextView txtView = (TextView) view.findViewById(R.id.title);
 		txtView.setText(text);
-		txtView.setTextAppearance(getContext(),
-				android.R.attr.textAppearanceSmall);
+		txtView.setTextAppearance(getContext(), android.R.attr.textAppearanceSmall);
 
 		txtView.setClickable(true);
 		txtView.setFocusable(true);
@@ -124,7 +122,7 @@ public class LocationsPreference extends Preference {
 	public void setListItemDeleteListener(OnClickListener onClickListener) {
 		listItemDeleteListener = onClickListener;
 	}
-	
+
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}

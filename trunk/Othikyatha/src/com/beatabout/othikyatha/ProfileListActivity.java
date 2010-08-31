@@ -1,7 +1,6 @@
 package com.beatabout.othikyatha;
 
 import java.util.List;
-import java.util.Vector;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -41,20 +40,20 @@ public class ProfileListActivity extends ListActivity {
 			createDefaultProfiles();
 		}
 		registerForContextMenu(getListView());
-		if (!dataManager.getManualMode()) {
-			addAllProximityAlerts();
-		}
+		addAllProximityAlerts();
 	}
-	
+
 	private void addAllProximityAlerts() {
 		Intent intent = new Intent(ProximityAlertService.PROXIMITY_ALERT_INTENT);
-		intent.putExtra(ProximityAlertService.REQUEST_TYPE, ProximityAlertService.REQUEST_ADD);
+		intent.putExtra(ProximityAlertService.REQUEST_TYPE,
+				ProximityAlertService.REQUEST_ADD);
 		getApplicationContext().startService(intent);
 	}
-	
+
 	private void removeAllProximityAlerts() {
 		Intent intent = new Intent(ProximityAlertService.PROXIMITY_ALERT_INTENT);
-		intent.putExtra(ProximityAlertService.REQUEST_TYPE, ProximityAlertService.REQUEST_REMOVE);
+		intent.putExtra(ProximityAlertService.REQUEST_TYPE,
+				ProximityAlertService.REQUEST_REMOVE);
 		getApplicationContext().startService(intent);
 	}
 
@@ -73,10 +72,8 @@ public class ProfileListActivity extends ListActivity {
 	@Override
 	public boolean onPreparePanel(int featureId, View view, Menu menu) {
 		MenuItem item = menu.findItem(R.id.manualMode);
-		item.setIcon(
-				dataManager.getManualMode()
-						? android.R.drawable.checkbox_on_background
-				    : android.R.drawable.checkbox_off_background);
+		item.setIcon(dataManager.getManualMode() ? android.R.drawable.checkbox_on_background
+				: android.R.drawable.checkbox_off_background);
 		return true;
 	}
 
@@ -97,7 +94,7 @@ public class ProfileListActivity extends ListActivity {
 					addAllProximityAlerts();
 				}
 				return true;
-				
+
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -111,7 +108,7 @@ public class ProfileListActivity extends ListActivity {
 		menu.setHeaderTitle("Profile Actions");
 		this.onPrepareOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
@@ -123,8 +120,10 @@ public class ProfileListActivity extends ListActivity {
 
 			case R.id.delete:
 				deleteProfile(profileId);
+				removeAllProximityAlerts();
+				addAllProximityAlerts();
 				return true;
-				
+
 			default:
 				return true;
 		}
@@ -132,8 +131,8 @@ public class ProfileListActivity extends ListActivity {
 
 	private void deleteProfile(int profileId) {
 		if (profileId != dataManager.getDefaultProfileId()) {
-		  dataManager.removeProfileEntry(profileId);
-		  reloadProfileList();
+			dataManager.removeProfileEntry(profileId);
+			reloadProfileList();
 		} else {
 			Toast.makeText(getApplicationContext(),
 					getString(R.string.default_no_delete), Toast.LENGTH_SHORT).show();
@@ -143,9 +142,8 @@ public class ProfileListActivity extends ListActivity {
 	private void createDefaultProfiles() {
 		int profileId;
 		Profile profile;
-		
-		AudioManager audioManager =
-			  (AudioManager) getSystemService(AUDIO_SERVICE);
+
+		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
@@ -219,7 +217,8 @@ public class ProfileListActivity extends ListActivity {
 			v.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
 					if (dataManager.getManualMode()) {
-						Intent intent = new Intent(ProfileSwitchService.PROFILE_SWITCH_INTENT);
+						Intent intent = new Intent(
+								ProfileSwitchService.PROFILE_SWITCH_INTENT);
 						intent.putExtra("profileId", profileId);
 						v.getContext().startService(intent);
 						dataManager.setActiveProfile(dataManager.getProfile(profileId));
@@ -248,7 +247,7 @@ public class ProfileListActivity extends ListActivity {
 					startEditActivity(profileId);
 				}
 			});
-			
+
 			return v;
 		}
 	}
