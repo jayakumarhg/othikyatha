@@ -75,6 +75,29 @@ public class ProfileEditActivity extends PreferenceActivity {
 			ProfileEditActivity.this.locationsPreference.populateLocations();
 		}
 	}
+	
+	@Override
+	public void onDestroy() {
+		switchProfile();
+		super.onDestroy();
+	}
+	
+	@Override
+	public void onStop() {
+		switchProfile();
+		super.onStop();
+	}
+
+	private void switchProfile() {
+    if (profileId == dataManager.getActiveProfileId()) {
+    	Intent intent = new Intent(
+					BackgroundService.BACKGROUND_SERVICE_INTENT);
+			intent.putExtra(BackgroundService.REQUEST_TYPE,
+					BackgroundService.REQUEST_SWITCH);
+			intent.putExtra("profileId", profileId);
+			getApplicationContext().startService(intent);
+    }
+	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK) {
