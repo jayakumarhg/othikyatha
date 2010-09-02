@@ -3,7 +3,7 @@
       package="com.beatabout.othikyatha"
       android:versionCode="1"
       android:versionName="1.0">
-    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="false">
         <activity android:label="@string/profile_list" android:name="ProfileListActivity"
                   android:launchMode="singleInstance">
             <intent-filter>
@@ -40,4 +40,5 @@
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 <uses-permission android:name="android.permission.WRITE_SETTINGS"></uses-permission>
+<uses-sdk android:minSdkVersion="5"></uses-sdk>
 </manifest> 
