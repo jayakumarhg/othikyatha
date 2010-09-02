@@ -20,11 +20,9 @@ public class ProfileManager {
 		setStreamVolume(audioManager, AudioManager.STREAM_VOICE_CALL,
 				profile.getVoiceVolume());
 
-		// Settings.System.putString(context, Settings.System.RINGTONE,
-		//		profile.getRingTone());
-
 		if (profile.getSilent()) {
-			audioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+			audioManager.setRingerMode(profile.getVibrate() ?
+					AudioManager.RINGER_MODE_VIBRATE : AudioManager.RINGER_MODE_SILENT);
 		} else {
 			audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
 		}
@@ -40,9 +38,6 @@ public class ProfileManager {
 		profile.setRingVolume(getStreamVolume(audioManager, AudioManager.STREAM_RING));
 		profile.setMediaVolume(getStreamVolume(audioManager, AudioManager.STREAM_MUSIC));
 		profile.setVoiceVolume(getStreamVolume(audioManager, AudioManager.STREAM_VOICE_CALL));
-
-		// profile.Settings.System.putString(context, Settings.System.RINGTONE,
-		//		profile.getRingTone());
 
 		int ringerMode = audioManager.getRingerMode();
 		profile.setSilent(ringerMode == AudioManager.RINGER_MODE_SILENT);
