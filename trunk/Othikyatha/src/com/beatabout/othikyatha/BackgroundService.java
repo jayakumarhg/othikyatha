@@ -130,6 +130,12 @@ public class BackgroundService extends IntentService {
 
 			switchProfile(profileId, entering);
 		}
+		
+		// We can afford to stop the service only if have no
+		// proximity alert intent handles.
+		if (pendingIntentsMap.isEmpty()) {
+		  this.stopSelf();
+		}
 	}
 
 	private void switchProfile(int profileId, boolean entering) {
