@@ -80,7 +80,6 @@ public class ProfileListActivity extends ListActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
 		switch (item.getItemId()) {
 			case R.id.addProfile:
 				int profileId = dataManager.addProfileEntry();

@@ -73,6 +73,24 @@ public class ProfileLocationActivity extends MapActivity {
 	}
 	
 	@Override
+	public void onStop() {
+		myLocationOverlay.disableMyLocation();
+		super.onStop();
+	}
+	
+	@Override
+	public void onDestroy() {
+		myLocationOverlay.disableMyLocation();
+		super.onDestroy();
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		myLocationOverlay.enableMyLocation();
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.mapviewmenu, menu);
