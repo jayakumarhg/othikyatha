@@ -124,11 +124,12 @@ public class BackgroundService extends IntentService {
 			removeAllProximityAlerts();
 			addAllProximityAlerts();
 		} else if (request == REQUEST_SWITCH) {
-			int profileId = extras.getInt(PROFILE_ID);
-			boolean entering = extras.getBoolean(
-					LocationManager.KEY_PROXIMITY_ENTERING, true);
-
-			switchProfile(profileId, entering);
+			int profileId = extras.getInt(PROFILE_ID, -1);
+			if (profileId >= 0) {
+				boolean entering = extras.getBoolean(
+						LocationManager.KEY_PROXIMITY_ENTERING, true);
+				switchProfile(profileId, entering);
+			}
 		}
 		
 		// We can afford to stop the service only if have no
