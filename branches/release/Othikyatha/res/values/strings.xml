@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="profile_edit">Caméléo > Edit Profile</string>
+	<string name="profile_list">Caméléo</string>
+	<string name="profile_edit_loc">Caméléo > Edit Profile > Location</string>
+	<string name="app_name">Caméléo</string>
+	<string name="name_pref">namePreference</string>
+	<string name="ringtone_pref">ringtonePreference</string>
+	<string name="ring_volume_pref">ringVolumePreference</string>
+	<string name="voice_volume_pref">voiceVolumePreference</string>
+	<string name="silent_pref">silentPreference</string>
+	<string name="vibrate_pref">vibratePreference</string>
+	<string name="media_volume_pref">mediaVolumePreference</string>
+	<string name="locations_pref">locationsPreference</string>
+	<string name="mapview_tip_zooom_select_pt">Tap to zoom and select a point</string>
+	<string name="mapview_tip_select_pt">Tap to select a point</string>
+	<string name="default_no_delete">Default profile cannot be deleted</string>
+</resources>
