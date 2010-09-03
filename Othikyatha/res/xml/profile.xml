@@ -36,4 +36,7 @@
            android:showSilent="false"
            android:key="@string/ringtone_pref" />
       -->
+      <CheckBoxPreference 
+           android:key="@string/wifi_pref"
+           android:title="Wifi" />
 </PreferenceScreen>
