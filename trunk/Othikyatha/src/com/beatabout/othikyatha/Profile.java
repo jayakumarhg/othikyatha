@@ -23,6 +23,7 @@ public class Profile {
 	private static final String LATITUDE_PREF = ".latitude@";
 	private static final String LONGITUDE_PREF = ".longitude@";
 	private static final String ADDRESS_PREF = ".address@";
+  private static final String WIFI_PREF = "wifiPreference";
 
 	private int profileId;
 	private SharedPreferences sharedPreferences;
@@ -96,6 +97,14 @@ public class Profile {
 		sharedPreferences.edit().putString(RINGTONE_PREF, uri).commit();
 	}
 
+  void setWifiState(boolean bool) {
+    sharedPreferences.edit().putBoolean(WIFI_PREF, bool).commit();
+  }
+
+	  boolean getWifiState() {
+	    return sharedPreferences.getBoolean(WIFI_PREF, false);
+	  }
+	  
 	public String toString() {
 		return getName();
 	}

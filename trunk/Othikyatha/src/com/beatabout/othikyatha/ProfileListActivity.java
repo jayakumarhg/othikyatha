@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.AudioManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -144,24 +145,25 @@ public class ProfileListActivity extends ListActivity {
 		Profile profile;
 
 		AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+    WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
 		profile.setName("Default");
-		ProfileManager.readCurrentProfile(profile, audioManager);
+		ProfileManager.readCurrentProfile(profile, audioManager, wifiManager);
 		dataManager.setActiveProfile(profile);
 		dataManager.setDefaultProfile(profile);
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
-		ProfileManager.readCurrentProfile(profile, audioManager);
+		ProfileManager.readCurrentProfile(profile, audioManager, wifiManager);
 		profile.setVibrate(false);
 		profile.setMediaVolume(Math.min(100, 2 * profile.getMediaVolume()));
 		profile.setName("Home");
 
 		profileId = dataManager.addProfileEntry();
 		profile = dataManager.getProfile(profileId);
-		ProfileManager.readCurrentProfile(profile, audioManager);
+		ProfileManager.readCurrentProfile(profile, audioManager, wifiManager);
 		profile.setVibrate(true);
 		profile.setMediaVolume(profile.getMediaVolume() / 2);
 		profile.setRingVolume(profile.getRingVolume() / 2);

@@ -14,6 +14,8 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 
 public class BackgroundService extends IntentService {
@@ -31,9 +33,9 @@ public class BackgroundService extends IntentService {
 	
 	public static int PROFILE_SWITCH_NOTIFY_ID = 0;
 
-	private AudioManager audioManager;
 	private NotificationManager notificationManager;
 
+  private ProfileManager profileManager;
 
 	private LocationManager locationManager;
 	private DataManager dataManager;
@@ -54,9 +56,12 @@ public class BackgroundService extends IntentService {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-		notificationManager =
-			  (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    notificationManager =
+      (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+    AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+    WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+		profileManager = new ProfileManager(audioManager, wifiManager);
 
 		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
@@ -145,7 +150,7 @@ public class BackgroundService extends IntentService {
 			profileId = dataManager.getDefaultProfileId();
 		}
 		Profile profile = dataManager.getProfile(profileId);
-		ProfileManager.applyProfile(profile, audioManager, getContentResolver());
+		profileManager.applyProfile(profile, getContentResolver());
 
 		// Notify only if we are really changing from the active profile.
 		if (profileId != dataManager.getActiveProfileId()) {
