@@ -61,7 +61,7 @@ public class ProfileManager {
 		// Mobile Network. But don't know how to get it working. Once figured out, 
 		// un-comment the following line and disable EnableData()
 		//connectivityMgr.setMobileDataEnabled(profile.getDataState());
-    EnableData(contentResolver, profile.getDataState());
+    // EnableData(contentResolver, profile.getDataState());
 	}
 	
 	public static void readCurrentProfile(Profile profile, AudioManager audioManager,
