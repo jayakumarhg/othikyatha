@@ -7,9 +7,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class ProfileManager {
@@ -20,14 +20,14 @@ public class ProfileManager {
 
   private AudioManager audioMgr;
   private WifiManager wifiMgr;
-  private ConnectivityManager connectivityMgr;
+  private TelephonyManager telephonyMgr;
 
   public ProfileManager(AudioManager audioManager,
                         WifiManager wifiManager,
-                        ConnectivityManager connectivityManager) {
+                        TelephonyManager telephonyManager) {
     audioMgr = audioManager;
     wifiMgr = wifiManager;
-    connectivityMgr = connectivityManager;
+    telephonyMgr = telephonyManager;
   }
   
 	public void applyProfile(Profile profile,
@@ -61,7 +61,7 @@ public class ProfileManager {
 		// Mobile Network. But don't know how to get it working. Once figured out, 
 		// un-comment the following line and disable EnableData()
 		//connectivityMgr.setMobileDataEnabled(profile.getDataState());
-    // EnableData(contentResolver, profile.getDataState());
+    EnableData(contentResolver, telephonyMgr, profile.getDataState());
 	}
 	
 	public static void readCurrentProfile(Profile profile, AudioManager audioManager,
@@ -90,12 +90,18 @@ public class ProfileManager {
 		return volume * 100 / max;
 	}
 	
-	private static boolean EnableData(ContentResolver contentResolver, boolean enable) {
+	private static boolean EnableData(ContentResolver contentResolver,
+	    TelephonyManager telephonyManager, boolean enable) {
+	  // if valid connection doesn't exist, return here
+	  if (telephonyManager.getSimOperator().length() == 0) {
+	    return true;
+	  }
 	  // First get the data out
 	  String[] projection = new String[2];
 	  projection[0] = "_id";
 	  projection[1] = "apn";
-	  Cursor cursor = contentResolver.query(APN_TABLE_URI, projection, null, null, null);
+	  String selection = "numeric = " + telephonyManager.getSimOperator();
+	  Cursor cursor = contentResolver.query(APN_TABLE_URI, projection, selection, null, null);
 	  ArrayList<ContentValues> all_apns = new ArrayList<ContentValues>();
     cursor.moveToFirst();
     boolean ret = true;

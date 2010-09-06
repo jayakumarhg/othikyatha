@@ -14,9 +14,9 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 
 public class BackgroundService extends IntentService {
 	public static final int PROXIMITY_EXPIRATION = -1;
@@ -61,8 +61,8 @@ public class BackgroundService extends IntentService {
 
     AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
     WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		profileManager = new ProfileManager(audioManager, wifiManager, connectivityManager);
+    TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+		profileManager = new ProfileManager(audioManager, wifiManager, telephonyManager);
 
 		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
