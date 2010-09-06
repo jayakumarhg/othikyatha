@@ -33,6 +33,7 @@ public class EditTextPreference extends Preference implements TextWatcher {
 		name.setText(getPersistedString("Default"));
 		name.setEnabled(enabled);
 		name.addTextChangedListener(this);
+		name.requestFocus();
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setText(getTitle());
 	}
