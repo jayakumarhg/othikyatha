@@ -81,7 +81,7 @@ public class ProfileManager {
 			int volume) {
 		float volumePerecent = (float) (volume / 100.0);
 		int vol = (int) (audioManager.getStreamMaxVolume(stream) * volumePerecent);
-		audioManager.setStreamVolume(stream, vol, AudioManager.FLAG_PLAY_SOUND);
+		audioManager.setStreamVolume(stream, vol, 0);
 	}
 	
 	private static int getStreamVolume(AudioManager audioManager, int stream) {
