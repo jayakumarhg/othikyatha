@@ -139,7 +139,7 @@ public class BackgroundService extends IntentService {
 		}
 		
 		// We can afford to stop the service only if have no
-		// proximity alert intent handles.
+		// proximity alert intent handles
 		if (pendingIntentsMap.isEmpty()) {
 		  this.stopSelf();
 		}
