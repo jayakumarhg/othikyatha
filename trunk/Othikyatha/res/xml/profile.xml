@@ -39,4 +39,7 @@
       <CheckBoxPreference 
            android:key="@string/wifi_pref"
            android:title="Wifi" />
+      <CheckBoxPreference 
+           android:key="@string/data_pref"
+           android:title="Data Access over Mobile Network" />
 </PreferenceScreen>
