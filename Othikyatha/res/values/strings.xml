@@ -16,4 +16,5 @@
 	<string name="mapview_tip_select_pt">Tap to select a point</string>
 	<string name="default_no_delete">Default profile cannot be deleted</string>
 	<string name="wifi_pref">wifiPreference</string>
+	<string name="data_pref">dataPreference</string>
 </resources>

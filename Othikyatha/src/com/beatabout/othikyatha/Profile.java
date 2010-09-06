@@ -24,6 +24,7 @@ public class Profile {
 	private static final String LONGITUDE_PREF = ".longitude@";
 	private static final String ADDRESS_PREF = ".address@";
   private static final String WIFI_PREF = "wifiPreference";
+  private static final String DATA_PREF = "dataPreference";
 
 	private int profileId;
 	private SharedPreferences sharedPreferences;
@@ -101,11 +102,19 @@ public class Profile {
     sharedPreferences.edit().putBoolean(WIFI_PREF, bool).commit();
   }
 
-	  boolean getWifiState() {
-	    return sharedPreferences.getBoolean(WIFI_PREF, false);
-	  }
+  boolean getWifiState() {
+	  return sharedPreferences.getBoolean(WIFI_PREF, false);
+	}
 	  
-	public String toString() {
+  void setDataState(boolean bool) {
+    sharedPreferences.edit().putBoolean(DATA_PREF, bool).commit();
+  }
+
+  boolean getDataState() {
+    return sharedPreferences.getBoolean(DATA_PREF, false);
+  }
+
+  public String toString() {
 		return getName();
 	}
 

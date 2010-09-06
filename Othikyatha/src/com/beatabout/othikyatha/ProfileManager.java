@@ -1,18 +1,33 @@
 package com.beatabout.othikyatha;
 
+import java.util.ArrayList;
+
 import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.SQLException;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 public class ProfileManager {
+  private static final String TAG = "ProfileManager";
+  
+  private static final String DISABLE_SUFFIX = "Othikyatha";
+  private static final Uri APN_TABLE_URI = Uri.parse("content://telephony/carriers");
 
   private AudioManager audioMgr;
   private WifiManager wifiMgr;
+  private ConnectivityManager connectivityMgr;
 
   public ProfileManager(AudioManager audioManager,
-                        WifiManager wifiManager) {
+                        WifiManager wifiManager,
+                        ConnectivityManager connectivityManager) {
     audioMgr = audioManager;
     wifiMgr = wifiManager;
+    connectivityMgr = connectivityManager;
   }
   
 	public void applyProfile(Profile profile,
@@ -40,6 +55,13 @@ public class ProfileManager {
 		// TODO(sumit): We should not call this on every profile switch.
 		// Call this when there is real change in state
 		wifiMgr.setWifiEnabled(profile.getWifiState());
+		
+		// Data Access over Mobile Network
+		// TODO(sumit): It seems there exists an internal API to turn on-off data over
+		// Mobile Network. But don't know how to get it working. Once figured out, 
+		// un-comment the following line and disable EnableData()
+		//connectivityMgr.setMobileDataEnabled(profile.getDataState());
+    EnableData(contentResolver, profile.getDataState());
 	}
 	
 	public static void readCurrentProfile(Profile profile, AudioManager audioManager,
@@ -66,5 +88,58 @@ public class ProfileManager {
 		int volume = audioManager.getStreamVolume(stream);
 		int max	=	audioManager.getStreamMaxVolume(stream);
 		return volume * 100 / max;
+	}
+	
+	private static boolean EnableData(ContentResolver contentResolver, boolean enable) {
+	  // First get the data out
+	  String[] projection = new String[2];
+	  projection[0] = "_id";
+	  projection[1] = "apn";
+	  Cursor cursor = contentResolver.query(APN_TABLE_URI, projection, null, null, null);
+	  ArrayList<ContentValues> all_apns = new ArrayList<ContentValues>();
+    cursor.moveToFirst();
+    boolean ret = true;
+    if (cursor != null) {
+	    do {
+	      if (cursor.getString(1).endsWith(DISABLE_SUFFIX)) {
+	        // already disabled
+	        if (enable) {
+	          ContentValues entry = new ContentValues();
+	          entry.put("_id", cursor.getString(0));
+	          entry.put("apn", cursor.getString(1).substring(
+	              0, cursor.getString(1).length() - DISABLE_SUFFIX.length()));
+	          all_apns.add(entry);
+	        }
+	      } else {
+	        // enabled
+	        if (!enable) {
+            ContentValues entry = new ContentValues();
+            entry.put("_id", cursor.getString(0));
+            entry.put("apn", cursor.getString(1) + DISABLE_SUFFIX);
+            all_apns.add(entry);
+	        }
+	      }
+	    } while (cursor.moveToNext());
+	    for (int i = 0; i < all_apns.size(); ++i) {
+	      ContentValues entry = all_apns.get(i);
+	      try
+        {
+	        Log.i(TAG, "Updating " + entry);
+            int count = contentResolver.update(APN_TABLE_URI, entry,
+                "_id=" + entry.getAsString("_id"), null);
+            if(count != 1)
+            {
+                ret &= false;
+                Log.w(TAG, "Something went wrong while updating APN: " +
+                      entry.getAsString("apn") + " ret_val: " + count);
+            }
+        }
+        catch (SQLException e)
+        {
+            Log.d(TAG, e.getMessage());
+        }
+	    }
+    }
+    return ret;
 	}
 }

@@ -61,7 +61,8 @@ public class BackgroundService extends IntentService {
 
     AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
     WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-		profileManager = new ProfileManager(audioManager, wifiManager);
+    ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		profileManager = new ProfileManager(audioManager, wifiManager, connectivityManager);
 
 		ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
 		dataManager = new DataManager(contextWrapper);
