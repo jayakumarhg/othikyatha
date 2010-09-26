@@ -90,7 +90,7 @@ public class BackgroundService extends IntentService {
 	}
 
 	private void addAllProximityAlerts() {
-		if (dataManager.getManualMode()) {
+		if (!dataManager.getAutoSwitchMode()) {
 			return;
 		}
 
