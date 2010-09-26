@@ -41,22 +41,13 @@ public class ProfileListActivity extends ListActivity {
 		if (dataManager.hasNoProfiles()) {
 			createDefaultProfiles();
 		}
+		
+		if (dataManager.hasNoSettings()) {
+		  dataManager.createDefaultSettings();
+		}
+		
 		registerForContextMenu(getListView());
-		addAllProximityAlerts();
-	}
-
-	private void addAllProximityAlerts() {
-		Intent intent = new Intent(BackgroundService.BACKGROUND_SERVICE_INTENT);
-		intent.putExtra(BackgroundService.REQUEST_TYPE,
-				BackgroundService.REQUEST_ADD);
-		getApplicationContext().startService(intent);
-	}
-
-	private void removeAllProximityAlerts() {
-		Intent intent = new Intent(BackgroundService.BACKGROUND_SERVICE_INTENT);
-		intent.putExtra(BackgroundService.REQUEST_TYPE,
-				BackgroundService.REQUEST_REMOVE);
-		getApplicationContext().startService(intent);
+		dataManager.addAllProximityAlerts();
 	}
 
 	public void onStart() {
@@ -72,14 +63,6 @@ public class ProfileListActivity extends ListActivity {
 	}
 
 	@Override
-	public boolean onPreparePanel(int featureId, View view, Menu menu) {
-		MenuItem item = menu.findItem(R.id.manualMode);
-		item.setIcon(dataManager.getManualMode() ? android.R.drawable.checkbox_on_background
-				: android.R.drawable.checkbox_off_background);
-		return true;
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.addProfile:
@@ -87,15 +70,11 @@ public class ProfileListActivity extends ListActivity {
 				startEditActivity(profileId);
 				return true;
 
-			case R.id.manualMode:
-				dataManager.toggleManualMode();
-				if (dataManager.getManualMode()) {
-					removeAllProximityAlerts();
-				} else {
-					addAllProximityAlerts();
-				}
-				return true;
-
+			case R.id.settingsId:
+			  Intent settings = new Intent("com.beatabout.othikyatha.SETTINGS");
+			  startActivity(settings);
+			  return true;
+			  
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -121,8 +100,8 @@ public class ProfileListActivity extends ListActivity {
 
 			case R.id.delete:
 				deleteProfile(profileId);
-				removeAllProximityAlerts();
-				addAllProximityAlerts();
+				dataManager.removeAllProximityAlerts();
+				dataManager.addAllProximityAlerts();
 				return true;
 
 			default:
@@ -189,8 +168,8 @@ public class ProfileListActivity extends ListActivity {
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		int profileId = v.getId();
-		if (dataManager.getManualMode()) {
+		if (!dataManager.getAutoSwitchMode()) {
+	    int profileId = v.getId();
 			Intent intent = new Intent(
 					BackgroundService.BACKGROUND_SERVICE_INTENT);
 			intent.putExtra(BackgroundService.REQUEST_TYPE,

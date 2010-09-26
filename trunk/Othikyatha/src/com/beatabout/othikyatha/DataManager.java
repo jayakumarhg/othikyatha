@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 public class DataManager {
@@ -22,13 +23,13 @@ public class DataManager {
 	public static final String ENABLED_PROFILES_FILE = "enabledProfilesFile";
 
 	public static final String NEXT_ID_KEY = "nextId";
-	public static final String MANUAL_MODE_KEY = "manualMode";
 	public static final String ACTIVE_PROFILE_KEY = "activeProfileId";
 	public static final String DEFAULT_PROFILE_KEY = "defaultProfileId";
 
 	private ContextWrapper contextWrapper;
 	private SharedPreferences globalPreferences;
 	private SharedPreferences enabledProfilesPreferences;
+  private SharedPreferences settingsPreferences;
 
 	public DataManager(ContextWrapper contextWrapper) {
 		this.contextWrapper = contextWrapper;
@@ -36,24 +37,14 @@ public class DataManager {
 				GLOBAL_PREFERENCES_FILE, Context.MODE_WORLD_READABLE);
 		enabledProfilesPreferences = contextWrapper.getSharedPreferences(
 				ENABLED_PROFILES_FILE, Context.MODE_WORLD_READABLE);
+		settingsPreferences = contextWrapper.getSharedPreferences(
+		    contextWrapper.getString(R.string.settings), Context.MODE_WORLD_READABLE);
 	}
 
 	public synchronized int getNextId() {
 		int next = globalPreferences.getInt(NEXT_ID_KEY, 0);
 		globalPreferences.edit().putInt(NEXT_ID_KEY, next + 1).commit();
 		return next;
-	}
-
-	public synchronized boolean getManualMode() {
-		return globalPreferences.getBoolean(MANUAL_MODE_KEY, false);
-	}
-
-	public synchronized void setManualMode(boolean mode) {
-		globalPreferences.edit().putBoolean(MANUAL_MODE_KEY, mode).commit();
-	}
-
-	public synchronized void toggleManualMode() {
-		setManualMode(!getManualMode());
 	}
 
 	/**
@@ -116,6 +107,10 @@ public class DataManager {
 		return enabledProfilesPreferences.getAll().isEmpty();
 	}
 
+	public boolean hasNoSettings() {
+	  return settingsPreferences.getAll().isEmpty();
+	}
+	
 	public void setActiveProfile(Profile profile) {
 		setActiveProfileId(profile.getProfileId());
 	}
@@ -151,4 +146,39 @@ public class DataManager {
 		int profileId = globalPreferences.getInt(DEFAULT_PROFILE_KEY, -1);
 		return profileId;
 	}
+
+  public void createDefaultSettings() {
+    // Set initial preference for settings
+    setAutoSwitchMode(true);
+  }
+  
+  public synchronized boolean getAutoSwitchMode() {
+    return settingsPreferences.getBoolean(contextWrapper.getString(R.string.auto_switch), false);
+  }
+
+  public synchronized void setAutoSwitchMode(boolean mode) {
+    settingsPreferences.edit().putBoolean(contextWrapper.getString(R.string.auto_switch), mode).commit();
+  }
+  
+  public void addAllProximityAlerts() {
+    Intent intent = new Intent(BackgroundService.BACKGROUND_SERVICE_INTENT);
+    intent.putExtra(BackgroundService.REQUEST_TYPE,
+        BackgroundService.REQUEST_ADD);
+    contextWrapper.startService(intent);
+  }
+
+  public void removeAllProximityAlerts() {
+    Intent intent = new Intent(BackgroundService.BACKGROUND_SERVICE_INTENT);
+    intent.putExtra(BackgroundService.REQUEST_TYPE,
+        BackgroundService.REQUEST_REMOVE);
+    contextWrapper.startService(intent);
+  }
+
+  public void onChangeSettings() {
+    if (getAutoSwitchMode()) {
+      addAllProximityAlerts();
+    } else {
+      removeAllProximityAlerts();
+    }
+  }
 }

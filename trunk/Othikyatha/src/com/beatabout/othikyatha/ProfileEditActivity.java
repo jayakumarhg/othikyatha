@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 public class ProfileEditActivity extends PreferenceActivity {
-	DataManager dataManager;
+	private DataManager dataManager;
 	private EditTextPreference editTextPreference;
 	private LocationsPreference locationsPreference;
 	private int profileId;
