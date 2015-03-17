@@ -1,0 +1,1 @@
+**Caméléo** is an android app to manage phone settings (like ring volume, vibrate) automatically based on user's geo-location.
